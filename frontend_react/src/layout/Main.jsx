@@ -61,20 +61,7 @@ function Main() {
   // codigo que sera executado apos form login for exibido
   // *****************************************************************************
   useEffect( () => {      
-    //$(divLogin.current).find("button").off('click');
-
     $(divLogin.current).find("button").off('click').click(function (event) {
-      login()
-    });
-
-    //$('#loginNome').focus();    
-  }, [htmlFormLogin])
-
-
-
-  // *****************************************************************************
-  const login = async () =>  { 
-      //event.preventDefault();
 
       fetch(`${backendUrl}/auth/login`,  {
         method: 'POST',
@@ -87,7 +74,12 @@ function Main() {
       .then(res => res.json()) 
       .then(res => console.log(res))
       .catch((error) => console.log('erro='+error));
-  }
+
+
+    });
+
+    $('#loginNome').focus();    
+  }, [htmlFormLogin])
 
 
   // *****************************************************************************
