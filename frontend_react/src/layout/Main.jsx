@@ -20,8 +20,8 @@ import { prepareLoadingAnimation  } from '../js/utils.js';
 
 export const SharedContext = createContext();
 
-//export const backendUrl = 'http://ec2-54-94-203-105.sa-east-1.compute.amazonaws.com:8071'
-export const backendUrl = 'http://localhost:3001'
+export const backendUrl = 'http://ec2-54-94-203-105.sa-east-1.compute.amazonaws.com:8071'
+//export const backendUrl = 'http://localhost:3001'
 
 function Main() {
 
