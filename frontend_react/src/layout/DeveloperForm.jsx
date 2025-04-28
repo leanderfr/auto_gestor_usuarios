@@ -28,7 +28,7 @@ function DeveloperForm( props )    {
     // carrega html do formulario
     const fetchDeveloper = async () =>  {
         // monta formulario
-        fetch(`${backendUrl}/developers/${recordId}`, { method: "GET" })
+        fetch(`${backendUrl}/developers/${recordId}`, { method: "POST" })
         .then((response) => response.json())
         .then((data) => {
             setTimeout(() => {
