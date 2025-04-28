@@ -51,6 +51,7 @@ function Main() {
       else {
         setHtmlFormLogin(data)
         setOferecerFormLogin(true)
+        setTimeout( () => { $('#loginNome').focus()}  , 1000)
       }
 
     })

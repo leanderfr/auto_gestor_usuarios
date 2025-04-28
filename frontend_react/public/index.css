@@ -1006,11 +1006,25 @@ input:checked + .slider_language:before {
 }
 
 .formLogin {
-  width:100%;
-  height:100%;
+  flex: 1;
   display:flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   background-color: #f2f2f2;
+  color: black;
+  padding-top: 5%;
+}
+
+input {
+  border: solid 1px gray;
+  cursor: pointer;
+  background-color: white;
+  border: solid 1px transparent;
+}
+
+input:hover {
+  border: solid 1px gray;
+  cursor: pointer;
+  background-color: white;
 }
