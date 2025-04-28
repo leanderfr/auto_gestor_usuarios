@@ -13,7 +13,7 @@ class AuthController extends Controller
     // ****************************************************************************************
     // verifica se ha usuario logado
     // ****************************************************************************************
-    public function verificaLogado  () {
+    public function verificarLogado  () {
       if (Auth::check()) { 
         $detalhesUsuario = Auth::user()->name . ';' . csrf_token() ;
 
@@ -25,6 +25,22 @@ class AuthController extends Controller
         return view('auth.form_login');
       }
     }
+
+
+    // ****************************************************************************************
+    // tenta login baseado no email e senha recebidos do front
+    // ****************************************************************************************
+    public function tentarLogin  () {
+
+        return view('auth.teste');
+    }
+
+
+
+
+
+
+
 
     public function showRegister() {
       return view('auth.register');

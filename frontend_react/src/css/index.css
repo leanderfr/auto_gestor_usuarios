@@ -121,7 +121,7 @@ input:checked + .slider_language:before {
   align-items: center;
   padding-left: 10px;
   padding-right: 10px;
-  height: 130px;
+  height: 100px;
 /*
   background-color: #88B9EB;*/
   background-color: white;
@@ -157,13 +157,14 @@ background-color: #4D4D4D;
 .logoAutoGestor {
 display: flex;
 flex-direction: column;
-align-items: center;
+align-items: flex-start;
 width:100%;
 font-size: 13px;
 color: #50B7D2;
 border-bottom: solid 1px gray;
-height:130px;
+height: 100px;
 justify-content: space-around;
+padding-left: 20px;
 }
 
 /* bandeira país/idioma selecionado escolhida */

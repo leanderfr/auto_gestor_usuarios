@@ -7,7 +7,7 @@ const preparaAnimacaoCarregando = () => {
     // react exibe/remove animacao ajax, necessario refazer propriedades da animacao sempre que for reexibida (useEffect)
     var opts = {
       lines: 12 // The number of lines to draw
-    , length: 40 // The length of each line
+    , length: 30 // The length of each line
     , width: 18 // The line thickness
     , radius: 42 // The radius of the inner circle
     , scale: 0.3 // Scales overall size of the spinner

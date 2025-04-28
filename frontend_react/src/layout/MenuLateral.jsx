@@ -15,9 +15,9 @@ function MenuLateral() {
 
     <>
       <div className='logoAutoGestor'>
-        <img src='images/logo_autogestor.svg' alt='' style={{ width: '170px'}} />
-        <div style={{  display: 'flex', flexDirection: 'column', alignItems : 'flex-start', width: '100%', 'marginLeft': '20px' }}>
-            <span >Permissões Usuário</span><br></br>
+        <img src='images/logo_autogestor.svg' alt='' style={{ width: '150px', paddingTop: '10px'}} />
+        <div style={{  display: 'flex', flexDirection: 'column', alignItems : 'flex-start', width: '100%' }}>
+            <span >Permissões Usuário</span>
             <span >Desenvolvido por: Leander Früchting</span>
         </div>
       </div>

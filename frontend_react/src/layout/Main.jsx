@@ -1,5 +1,5 @@
 
-import { useEffect, createContext  } from 'react';
+import { useEffect, createContext, useRef  } from 'react';
 
 // useState de 'Aminadav Glickshtein' permite 3o parametro para obter estado atual da variavel
 // fazer isso com useState padrao do react é muito complicado
@@ -27,41 +27,25 @@ function Main() {
   // controla item do menu lateral (MenuLateral) atualmente clicado
   let [itemMenuAtual, setItemMenuAtual] = useState('')
 
+  // controla exibicao da animacao 'carregando...'
   let [carregando, setCarregando] = useState(true)
 
+  // controla info do usuario atualmente logado
   let [nomeUsuarioAtual, setNomeUsuarioAtual] = useState('')
   let [tokenUsuarioAtual, setTokenUsuarioAtual] = useState('')
 
+  // controla se é necessario exibir a tela de login
   let [oferecerFormLogin, setOferecerFormLogin] = useState(false)
+
+  // controla o HTML da tela de login que é recebido do backend
   let [htmlFormLogin, setHtmlFormLogin] = useState('')
 
+ const divLogin = useRef(null); 
 
-  // verifica se ha usuario logado atualmente
-  const fetchUsuarioAtual = async () =>  {
-    fetch(`${backendUrl}/auth/verificar`)
-    .then((response) => {
-        const contentType = response.headers.get("Content-Type")
 
-        if (contentType && contentType.includes("application/json")) return response.json()
-        if (contentType && contentType.includes("text/html")) return response.text()
-    })
-    .then((data) => {
-
-      if (stringEhJson(data)) console.log('usu logado')
-      else {
-        setHtmlFormLogin(data)
-        setOferecerFormLogin(true)
-        setTimeout( () => { $('#loginNome').focus()}  , 1000)
-      }
-
-    })
-    .catch((error) => console.log('erro='+error));
-
-      setTimeout(() => {
-        setCarregando(false);
-        }, 1000);
-  }
-
+  // *****************************************************************************
+  // codigo que sera executado apos HTML ter sido carregado
+  // *****************************************************************************
   useEffect( () => {      
       preparaAnimacaoCarregando()  
   
@@ -73,6 +57,72 @@ function Main() {
   }, [nomeUsuarioAtual])
 
 
+  // *****************************************************************************
+  // codigo que sera executado apos form login for exibido
+  // *****************************************************************************
+  useEffect( () => {      
+    //$(divLogin.current).find("button").off('click');
+
+    $(divLogin.current).find("button").off('click').click(function (event) {
+      login()
+    });
+
+    //$('#loginNome').focus();    
+  }, [htmlFormLogin])
+
+
+
+  // *****************************************************************************
+  const login = async () =>  { 
+      //event.preventDefault();
+
+      fetch(`${backendUrl}/auth/login`,  {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json, text/plain, */*',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({a: 7, str: 'Some string: &=&'})
+      })
+      .then(res => res.json()) 
+      .then(res => console.log(res))
+      .catch((error) => console.log('erro='+error));
+  }
+
+
+  // *****************************************************************************
+  // busca no backend se ha usuario logado
+  // *****************************************************************************
+  const fetchUsuarioAtual = async () =>  {
+    fetch(`${backendUrl}/auth/verificar`)
+    .then((response) => {
+        const contentType = response.headers.get("Content-Type")
+
+        // se usuario logado, backend enviou sua info em formato JSON
+        if (contentType && contentType.includes("application/json")) return response.json()
+
+        // caso contrario, backend enviou o HTML do form de login
+        if (contentType && contentType.includes("text/html")) return response.text()
+    })
+    .then((data) => {
+
+      if (stringEhJson(data)) console.log('usu logado')
+      else {
+        // nao ha usuario logado, backend enviou html do form de login 
+        // o backend nao sabe qual URI do frontend, substituindo abaixo
+        data = data.replace('@frontendUri', window.location.href.slice(0, -1))   // remove ultimo '/'
+
+        setHtmlFormLogin(data)
+        setOferecerFormLogin(true)        
+
+         
+        setCarregando(false);  // oculta animacao 'carregando...'
+      }
+
+    })
+    .catch((error) => console.log('erro='+error));
+  }
+  
   return (
 
     <>
@@ -105,8 +155,8 @@ function Main() {
 
               </div>
 
-              {/* se usuario nao logado ainda, oferece form de login que foi obtido do backend laravel */}
-              { oferecerFormLogin && <div className='formLogin' dangerouslySetInnerHTML={{__html: htmlFormLogin}}></div> }
+              {/* se usuario nao logado ainda, mostra form de login que foi obtido do backend laravel */}
+              { oferecerFormLogin && <div className='formLogin' ref={divLogin} dangerouslySetInnerHTML={{__html: htmlFormLogin}}></div> }
 
           </div>
 

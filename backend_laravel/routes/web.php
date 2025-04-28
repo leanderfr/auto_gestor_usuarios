@@ -1,6 +1,7 @@
 <?php
 
 
+
 use Illuminate\Support\Facades\Route;
 Use App\Http\Controllers\AuthController;
 
@@ -9,7 +10,8 @@ Use App\Http\Controllers\AuthController;
 Route::group(['prefix'=>'auth'], function(){
     // verifica se ha usuario logado, se sim, retorna string com detalhes do usuario
     // se nao, retorna o formulario de login
-    Route::get('/verificar', [AuthController::class, 'verificaLogado'])->name('verificaLogado');
+    Route::get('/verificar', [AuthController::class, 'verificarLogado'])->name('verificarLogado');
+    Route::post('/login', [AuthController::class, 'tentarLogin'])->name('tentarLogin');
 });
 
 Route::get('/register', [AuthController::class, 'showRegister'])->name('show.register');
