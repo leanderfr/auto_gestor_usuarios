@@ -1,103 +1,91 @@
 
 import { useEffect, createContext  } from 'react';
 
-
 // useState de 'Aminadav Glickshtein' permite 3o parametro para obter estado atual da variavel
 // fazer isso com useState padrao do react é muito complicado
 import useState from 'react-usestateref'
 import '../css/index.css';
 
 import Header from './Header';
-import Datatable from './Datatable';
-import Sidebar from './Sidebar.jsx';
+//import Datatable from './Datatable';
+import MenuLateral from './MenuLateral.jsx';
 
 import $ from 'jquery'
 
 import 'jquery-ui-bundle';
 import 'jquery-ui-bundle/jquery-ui.min.css';
 
-import { prepareLoadingAnimation  } from '../js/utils.js';
+import { preparaAnimacaoCarregando, stringEhJson  } from '../js/utils.js';
 
-export const SharedContext = createContext();
+export const ContextoCompartilhado = createContext();
 
-export const backendUrl = 'http://ec2-54-94-203-105.sa-east-1.compute.amazonaws.com:8071'
-//export const backendUrl = 'http://localhost:3001'
+//export const backendUrl = 'http://ec2-54-94-203-105.sa-east-1.compute.amazonaws.com:8071'
+export const backendUrl = 'http://localhost:8000'
 
 function Main() {
 
-  // controla se o idioma inglês esta selecionado no momento (via checkbox)
-  let [isUSAChecked, setUSAChecked, getUSAChecked] = useState(true)
+  // controla item do menu lateral (MenuLateral) atualmente clicado
+  let [itemMenuAtual, setItemMenuAtual] = useState('')
 
-  // controla backend atual
-  let [currentBackend, setCurrentBackend] = useState('laravel')
+  let [carregando, setCarregando] = useState(true)
 
-  // controla item do menu lateral (sidebar) atualmente clicado
-  let [currentMenuItem, setCurrentMenuItem] = useState('itemMenuDevelopers')
+  let [nomeUsuarioAtual, setNomeUsuarioAtual] = useState('')
+  let [tokenUsuarioAtual, setTokenUsuarioAtual] = useState('')
 
-  let [isLoading, setIsLoading] = useState(true)
-
-  // expressoes/frases usadas dependendo do idioma selecionado
-  let [expressions, setExpressions, getExpressions] = useState(null)
-  
-
-  // usuario mudou idioma atual em Header.jsx, recarrega 
-  const changeLanguageAndReload = ( isUSAChecked ) => {
-    setIsLoading(true)
-    setUSAChecked(isUSAChecked)   // define novo idioma que foi recebido de 'Header.jsx'
-    setExpressions(null)   // dispara useEffect 
-  } 
-
-  // usuario mudou backend em header.jsx, recarrega 
-  const changeBackendAndReload = ( backend ) => {    
-    setCurrentBackend(backend)   
-    setExpressions(null)   // dispara useEffect 
-  } 
+  let [oferecerFormLogin, setOferecerFormLogin] = useState(false)
+  let [htmlFormLogin, setHtmlFormLogin] = useState('')
 
 
+  // verifica se ha usuario logado atualmente
+  const fetchUsuarioAtual = async () =>  {
+    fetch(`${backendUrl}/auth/verificar`)
+    .then((response) => {
+        const contentType = response.headers.get("Content-Type")
 
-  const fetchExpressions = async () =>  {
-    let _isUSAChecked = getUSAChecked.current
-    let language = _isUSAChecked ? 'english' : 'portuguese';
-
-    fetch(`${backendUrl}/expressions/${language}`)
-    .then((response) => response.json())
+        if (contentType && contentType.includes("application/json")) return response.json()
+        if (contentType && contentType.includes("text/html")) return response.text()
+    })
     .then((data) => {
-      setExpressions(data);
-      setIsLoading(false)  
+
+      if (stringEhJson(data)) console.log('usu logado')
+      else {
+        setHtmlFormLogin(data)
+        setOferecerFormLogin(true)
+      }
+
     })
     .catch((error) => console.log('erro='+error));
+
+      setTimeout(() => {
+        setCarregando(false);
+        }, 1000);
   }
 
   useEffect( () => {      
-      prepareLoadingAnimation()  
+      preparaAnimacaoCarregando()  
   
-      // carrega expressoes do idioma atual
-      // força 1/2 segundo de parada para que usuario perceba que esta recarregando
-      // necessario testar de 'expressions' nulo, se nao react executa useEffect sem parar
-      if ( getExpressions.current == null )    
+      // verifica se ha usuario logado
+      if ( nomeUsuarioAtual.current == null )    
         setTimeout(() => {
-          fetchExpressions()    
+          fetchUsuarioAtual()    
         }, 500);
-  }, [expressions])
+  }, [nomeUsuarioAtual])
 
 
   return (
 
     <>
 
-    <div className="Content">
+    <div className="Conteudo">
 
-      {/* context => compartilha idioma, expressoes e backend  atual entre os componentes */}
-      <SharedContext.Provider 
+      {/* context => compartilha item do menu atualmente clicado */}
+      <ContextoCompartilhado.Provider 
         value={{ 
-            _expressions: expressions, 
-            _isUSAChecked: isUSAChecked, 
-            _currentBackend: currentBackend, 
-            _currentMenuItem: currentMenuItem  }}  >
+            _itemMenuAtual: itemMenuAtual  }}  >
 
           {/* barra lateral esquerda */}
-          <div className='Sidebar'>
-                <Sidebar  />
+          <div className='MenuLateral'>
+                <MenuLateral  />
           </div>
 
           {/* header e datatable */}
@@ -105,32 +93,30 @@ function Main() {
 
               <div className='Header'>
                 {/* se esta carregando expressoes ainda, carrega Header sem dados, só parte visual */}
-                { isLoading && 
+                { carregando && 
                   <Header  /> }
 
-                {/* se ja carregou expressoes, carrega Header com as frases do idiomas atual */}
-                { expressions && 
-                  <Header                 
-                    onChangeLanguage={changeLanguageAndReload}                 
-                    onChangeBackend={changeBackendAndReload} 
+                {/* se ja verificou usuario atual, carrega Header com exibindo seus dados */}
+                { nomeUsuarioAtual && 
+                  <Header nomeUsuarioAtual={nomeUsuarioAtual}
+                  //  onChangeLanguage={changeLanguageAndReload}                 
                   /> }
 
               </div>
 
-              <div className='Datatable'>
-                { expressions && <Datatable   /> }
-              </div>
+              {/* se usuario nao logado ainda, oferece form de login que foi obtido do backend laravel */}
+              { oferecerFormLogin && <div className='formLogin' dangerouslySetInnerHTML={{__html: htmlFormLogin}}></div> }
 
           </div>
 
-      </SharedContext.Provider>
+      </ContextoCompartilhado.Provider>
 
     </div>    
 
     {/* animacao 'carregando...' */}
-    { isLoading && 
-        <div className='backdropTransparent' style={{ visibility: isLoading ? 'visible' : 'hidden' }} >
-          <div id='divLoading' >&nbsp;</div>
+    { carregando && 
+        <div className='backdropTransparent' style={{ visibility: carregando ? 'visible' : 'hidden' }} >
+          <div id='divCarregando' >&nbsp;</div>
         </div>
     }
 

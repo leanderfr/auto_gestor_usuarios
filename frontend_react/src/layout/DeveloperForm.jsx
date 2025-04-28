@@ -7,7 +7,7 @@ import {  backendUrl } from './Main.jsx';
 // fazer isso com useState padrao do react é muito complicado
 import useState from 'react-usestateref'
 
-import { prepareLoadingAnimation  } from '../js/utils.js';
+import { preparaAnimacaoCarregando  } from '../js/utils.js';
 
 
 function DeveloperForm( props )    {
@@ -41,7 +41,7 @@ function DeveloperForm( props )    {
     }
 
     useEffect( () => {
-        prepareLoadingAnimation()
+        preparaAnimacaoCarregando()
 
         // carrega dados do developer atual
         // força 1/2 segundo de parada para que usuario perceba que esta recarregando
@@ -83,7 +83,7 @@ function DeveloperForm( props )    {
             {/* animacao 'carregando...' */}
             { isLoading && 
                 <div className='backdropTransparent'  >
-                  <div id='divLoading' >&nbsp;</div>
+                  <div id='divCarregando' >&nbsp;</div>
                 </div>
             }
 

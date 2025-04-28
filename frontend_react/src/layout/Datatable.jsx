@@ -1,6 +1,6 @@
 
 import '../css/index.css';
-import {  SharedContext, backendUrl } from './Main.jsx';
+import {  ContextoCompartilhado, backendUrl } from './Main.jsx';
 import {  useContext, useEffect, Fragment } from 'react';
 import DeveloperForm from './DeveloperForm.jsx'
 
@@ -11,7 +11,7 @@ import useState from 'react-usestateref'
 function Datatable( props ) {
 
   // expressions (frases) no idioma atual e item do menu lateral que foi clicado
-  let { _expressions, _currentMenuItem }  = useContext(SharedContext);  
+  let { _expressions, _currentMenuItem }  = useContext(ContextoCompartilhado);  
 
   // colunas que serao exibidias dependendo da tabela sendo vista (_currentMenuItem)
   let columns = []

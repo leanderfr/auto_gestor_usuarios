@@ -669,14 +669,14 @@ input:checked + .slider_language:before {
   background-color: white;
 }
 
-.Content {
+.Conteudo {
   display: flex;
   flex-direction: row;
   width:100vw;
   height:100vh;
 }
 
-.Sidebar {
+.MenuLateral {
   display: flex;
   flex-direction: column;
   flex-basis: 20%;
@@ -699,7 +699,7 @@ input:checked + .slider_language:before {
   align-items: center;
   padding-left: 10px;
   padding-right: 10px;
-  height: 110px;
+  height: 130px;
   /*
   background-color: #88B9EB;*/
   background-color: white;
@@ -733,14 +733,15 @@ input:checked + .slider_language:before {
   background-color: #4D4D4D;
 }
 
-.logoReact {
+.logoAutoGestor {
   display: flex;
   flex-direction: column;
   align-items: center;
   width:100%;
+  font-size: 13px;
   color: #50B7D2;
   border-bottom: solid 1px gray;
-  height:110px;
+  height:130px;
   justify-content: space-around;
 }
 
@@ -868,7 +869,7 @@ input:checked + .slider_language:before {
   align-items: center;
 }
 
-#divLoading {
+#divCarregando {
   width: 120px;
   height: 70px;
   position: fixed;
@@ -1004,4 +1005,12 @@ input:checked + .slider_language:before {
   display:flex;
 }
 
-
+.formLogin {
+  width:100%;
+  height:100%;
+  display:flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #f2f2f2;
+}

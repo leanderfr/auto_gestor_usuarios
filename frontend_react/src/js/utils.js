@@ -3,7 +3,7 @@ import 'spin.js/spin.css';
 import {Spinner} from 'spin.js';
 
 
-export function prepareLoadingAnimation () {
+const preparaAnimacaoCarregando = () => {
     // react exibe/remove animacao ajax, necessario refazer propriedades da animacao sempre que for reexibida (useEffect)
     var opts = {
       lines: 12 // The number of lines to draw
@@ -30,6 +30,20 @@ export function prepareLoadingAnimation () {
     }
 
     // para exibir/ocultar esta div, usar as funcoes: showLoadingGif()/hideLoadingGif()
-    var divLoading = document.getElementById('divLoading');
-    new Spinner(opts).spin(divLoading);
+    var divCarregando = document.getElementById('divCarregando');
+    new Spinner(opts).spin(divCarregando);
 }
+
+// verifica se um string esta em formato JSON
+// importante para testar a resposta enviada pelo backend
+const  stringEhJson = (string) => {
+    try {
+        JSON.parse(string);
+    } catch (e) {
+        return false;
+    }
+    return true;
+
+}
+
+export { preparaAnimacaoCarregando, stringEhJson };
