@@ -14,13 +14,13 @@
     </span>
 
     <div style='display: flex; flex-direction: column; gap: 2px ' >
-      <div>dddNome:</div>
-      <input type='text' id='nome'  style='padding: 5px' autocomplete="off" />
+      <div>Nome:</div>
+      <input type='text' id='nome'  style='padding: 5px' autocomplete="off"  />
     </div>
 
     <div style='display: flex; flex-direction: column; gap: 5px;padding-bottom: 20px; padding: 2px ' >
       <div>E-mail:</div>
-      <input type='text' id='email' style='padding: 5px ' autocomplete="off" />
+      <input type='text' id='email' style='padding: 5px ' autocomplete="off"  />
     </div>
 
     <div style='display: flex; flex-direction: column; gap: 5px;padding-bottom: 20px; padding: 2px ' >

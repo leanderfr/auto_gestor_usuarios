@@ -36,7 +36,7 @@ function Header( props ) {
     <>
 
         {/* detalhes do usuario logado */}
-        <div style={{color: 'red', fontSize: '30px'}} >aa{  infoUsuarioLogado  } </div>
+        <div id='infoUsuarioLogado' style={{color: 'red', fontSize: '30px'}} >aa{  infoUsuarioLogado  } </div>
 
 
         {/* botoes novo usuario, login, logout */}

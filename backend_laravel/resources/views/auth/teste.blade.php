@@ -1,7 +1,13 @@
 
 
 <div style='color:blue;font-size:30px'>
-      
+
+      <div style='color:blue;font-size:30px'>
+      chave atual = {{ csrf_token() }}
+      user atual = {{ auth()->user() }}
+      </div>
+
+
 @if(Auth::check())  
 
       <div style='color:blue;font-size:30px'>

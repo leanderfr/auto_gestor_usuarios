@@ -59,13 +59,7 @@ const mensagemRolante = (html, time) => {
   divRolante.show("slide", { direction: "left" }, 200);
 
   setTimeout(function () { divRolante.hide("slide", { direction: "right" }, 200); }, time);
-
-  // toca beep
-  //var thissound = $('#beepDeErro');
-  //if (thissound['play']) thissound.play();
 }
-
-
 
 
 export { preparaAnimacaoCarregando, stringEhJson, mensagemRolante };

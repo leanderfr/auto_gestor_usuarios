@@ -38,13 +38,12 @@ function Main() {
   // controla o HTML da tela de login que é recebido do backend
   let [htmlFormLogin, setHtmlFormLogin] = useState('')
 
-
-  // controla se o form de registro (novo usuario) deve ser exibido, isso vai ocorrer qdo usuario pediu para se registrar clicando no botao REGISTRAR ME (Header)
+   // controla se o form de registro (novo usuario) deve ser exibido, isso vai ocorrer qdo usuario pediu para se registrar clicando no botao REGISTRAR ME (Header)
   let [mostrarFormRegistro, setMostrarFormRegistro, getMostrarFormRegistro] = useState(false)
   // controla o HTML da tela de registro (novo usuario) que é recebido do backend
   let [htmlFormRegistro, setHtmlFormRegistro] = useState('')
-
-
+  // memoriza valor atual de cada campo no fomr de registro (novo usuario) para em caso de erro ao submter form
+  let [valoresFormRegistro, setValoresFormRegistro, getValoresFormRegistro] = useState( {nome: '', email: ''} )
 
   // ponteiro para a DIV do form login, para poder monitorar o botao 'submit'
   const divLogin = useRef(null); 
@@ -111,53 +110,100 @@ function Main() {
   useEffect( () => {       
 
     // se o form de registro (novo usuario) foi exibido, faz as configuracoes jscript necessarias
-    if (! getMostrarFormRegistro.current) return
+    if (! getMostrarFormRegistro.current ) return 
 
-console.log('ai vai')
+    prepararFormRegistro()
 
-    // prepara botao 'registrar' do form de registro (novo usuario) para que dispare dados do novo usuario para o back
-    $(divRegistro.current).find("button").off('click').click(function (event) {
-        setCarregando(true)
-
-        // necessario dar algusn milisegunos para que a animacao 'carregando... '  seja exibida
-        setTimeout(() => {
-            // chama rota para registrar novo usuario passando os campos definidos por ele/ela
-            fetch(`${backendUrl}/auth/registrar`,  {
-              method: 'POST',
-              headers: {
-                'Accept': 'application/json, text/plain, */*',
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify( {
-                nome: $('#nome').val(),
-                email: $('#email').val(),
-                senha: $('#senha').val(),
-                senha_confirmation: $('#senha_confirmation').val(),
-              })
-            })
-            .then(resposta => resposta.json()) 
-            .then(resposta => {
-              // deve haver um jeito mais inteligente de exibir o erro abaixo, mas sao 01:08 da manha, vai usando IF mesmo 
-              let erro = ''
-              let foco = ''
-              if (typeof resposta.errors.nome) {erro = resposta.errors.nome; foco = 'nome'}
-              if (typeof resposta.errors.senha) {erro = resposta.errors.senha; foco='senha'}
-              if (typeof resposta.errors.email) {erro = resposta.errors.email; foco='email'}
-      
-              if (erro!=='')  {
-                mensagemRolante(erro, 2000)
-                setTimeout(() => { $(`#${foco}`).focus()}, 100);
-              }
-
-            })
-            .catch((error) => console.log('erro='+error));  
-            setCarregando(false)
-        }, 100);
-
-    });
-
-    $('#loginNome').focus();    
   }, [mostrarFormRegistro])
+
+  // **************************************************************************************************
+  // prepara clique no botao 'REGISTRAR' e outros detalhes do form REGISTRAR (novo usuario)
+  // **************************************************************************************************
+  const prepararFormRegistro = () => {
+
+      // prepara botao 'registrar' do form de registro (novo usuario) para que dispare dados do novo usuario para o back
+      $(divRegistro.current).find("button").off('click').click(function (event) {
+          // memoriza campos digitados caso dê erro
+          // necessario fazer isso porque o html vem do backend
+          // caso o form fosse montado aqui no front, nao seria necessario
+          setValoresFormRegistro( { 
+            nome: $('#nome').val(),
+            email: $('#email').val(),
+          })
+
+          let body = JSON.stringify( {
+              name: $('#nome').val(),
+              email: $('#email').val(),
+              password: $('#senha').val(),
+              password_confirmation: $('#senha_confirmation').val(),
+          })
+              
+          setCarregando(true)
+
+          let erro = ''
+
+          // necessario dar algusn milisegunos para que a animacao 'carregando... '  seja exibida
+          setTimeout(() => {
+              // chama rota para registrar novo usuario passando os campos definidos por ele/ela
+              fetch(`${backendUrl}/auth/registrar`,  {
+                method: 'POST',
+                headers: {
+                  'Accept': 'application/json, text/plain, */*',
+                  'Content-Type': 'application/json'
+                },
+                body: body
+              })
+              .then(res => res.json()) 
+              .then(resposta => {
+
+console.log('resp1='+JSON.stringify(resposta))
+
+                // deve haver um jeito mais inteligente de exibir o erro abaixo, mas sao 01:08 da manha, vai usando IF mesmo 
+                erro = ''
+                if (typeof resposta.errors!='undefined') {
+                    if (typeof resposta.errors.nome!='undefined') erro = resposta.errors.nome;
+                    if (typeof resposta.errors.senha!='undefined') erro = resposta.errors.senha;
+                    if (typeof resposta.errors.email!='undefined') erro = resposta.errors.email;
+                }
+        
+                if (erro!=='')  {
+                  mensagemRolante(erro, 2000)
+                
+                  // deu erro ao submeter, recupera ultimos valores digitados
+                  // isso ocorre porque qq alteracao visual na tela (exemplo: setCarregando)
+                  // o react esquece valores
+                  setTimeout(() => {
+                      //$('#nome').val( getValoresFormRegistro.current.nome )
+                      //$('#email').val( getValoresFormRegistro.current.email )                 
+                  }, 100);
+                }  
+                else {
+                  setInfoUsuarioLogado( resposta.nome )
+                }
+
+              })
+              .catch((error) => console.log('erro='+error));  
+              setCarregando(false)
+
+              // zera os campos do form registro (novo usuario), caso seja usado de novo
+              if (erro==='')
+                  setTimeout(() => {
+                      $('#nome').val('')
+                      $('#email').val('')                 
+                  }, 100);
+
+              // refaz jscript ativo do form registro, pois o react destroy ao atualizar a tela
+              setTimeout(() => {
+                prepararFormRegistro()  
+              }, 1000);
+            
+
+          }, 100);
+
+      });
+
+      $('#nome').focus();    
+  }
 
   // ***************************************************************************************
   // caso usuario tenha pedido para se registrar clicando no botao REGISTRAR (Header)
@@ -213,15 +259,11 @@ console.log('ai vai')
     .catch((error) => console.log('erro='+error));
   }
   
-  return (
-
+  return (    
     <>
 
-    {/* som que sera tocado qdo algum erro exibido */}
-    <audio id="beepDeErro" src="error_beep.mp3" preload="auto" autobuffer></audio>
-
-
     <div className="Conteudo">
+
 
       {/* context => compartilha item do menu atualmente clicado */}
       <ContextoCompartilhado.Provider 
@@ -245,7 +287,6 @@ console.log('ai vai')
                       formLoginAtivo={mostrarFormLogin}                    
                       exibirFormRegistro={exibirFormRegistro}   
                       exibirFormLogin={exibirFormLogin}                     /> 
-
                 }
 
               </div>

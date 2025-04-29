@@ -47,36 +47,36 @@ class AuthController extends Controller
     public function novoUsuario  (Request $request) {
 
       $erros = [
-          'email' => 'Email não está em um formato correto',
-          'nome' => 'Nome precisa ter entre 3 e 150 caracteres',
-          'senha.min' => 'A senha precisa ter entre 3 e 50 caracteres',
-          'senha.max' => 'A senha precisa ter entre 3 e 50 caracteres',
-          'senha.required' => 'Preencha a senha',
-          'senha.confirmed' => 'A senha não confirma',
+          'email.required' => 'Preencha o email',
+          'email.email' => 'Email não está em um formato correto',
+          'email.unique' => 'Email já cadastrado, use o formulário de login',
+          'name' => 'Nome precisa ter entre 3 e 150 caracteres',
+          'password.min' => 'A senha precisa ter entre 3 e 50 caracteres',
+          'password.max' => 'A senha precisa ter entre 3 e 50 caracteres',
+          'password.required' => 'Preencha a senha',
+          'password.confirmed' => 'A senha não confirma',
       ];
       $verificar =  [
-        'nome' => 'required|string|max:150|min:3',
-        'email' => 'required|email|string|unique:users|max:150',
-        'senha' => 'required|string|min:3|max:50|confirmed'
+        'name' => 'required|string|max:150|min:3',
+        'email' => 'required|email|string|unique:users|max:150', 
+        'password' => 'required|string|min:3|max:50|confirmed'
       ];
 
-      $regUsuarioTestado = $request->validate($verificar, $erros);
+      //$regUsuarioTestado = $request->validate($verificar, $erros);
+      $regUsuarioTestado = $request->validate($verificar);
 
       $novoUsuario = User::create( $regUsuarioTestado );
 
       Auth::login( $novoUsuario );
+      Auth::login( $novoUsuario );
+      Auth::login( $novoUsuario );
+      Auth::login( $novoUsuario );
 
-      // quem separa as informacoes é a string '|||'
-      return response($regUsuarioTestado .'--'. $novoUsuario, 200)
-        ->header('Content-Type', 'text/plain');
 
-
+//      $detalhesUsuarioRecemLogado = Auth::user()->name . ';' . csrf_token() ;
+      $resOK = array('nome'=>Auth::user()->name, 'token'=>csrf_token(), 'novo'=>$novoUsuario);
+      return response(json_encode($resOK), 200) ;
     }
-
-
-
-
-
 
 
     public function showRegister() {
