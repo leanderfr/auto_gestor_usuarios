@@ -12,6 +12,7 @@ Route::group(['prefix'=>'auth'], function(){
     // se nao, retorna o formulario de login
     Route::get('/verificar', [AuthController::class, 'verificarLogado'])->name('verificarLogado');
     Route::post('/login', [AuthController::class, 'tentarLogin'])->name('tentarLogin');
+    Route::post('/registrar', [AuthController::class, 'novoUsuario'])->name('novoUsuario');
 });
 
 Route::get('/register', [AuthController::class, 'showRegister'])->name('show.register');

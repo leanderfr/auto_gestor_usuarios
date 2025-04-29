@@ -15,7 +15,7 @@ import $ from 'jquery'
 import 'jquery-ui-bundle';
 import 'jquery-ui-bundle/jquery-ui.min.css';
 
-import { preparaAnimacaoCarregando, stringEhJson  } from '../js/utils.js';
+import { preparaAnimacaoCarregando, stringEhJson, mensagemRolante  } from '../js/utils.js';
 
 export const ContextoCompartilhado = createContext();
 
@@ -34,14 +34,14 @@ function Main() {
   let [infoUsuarioLogado, setInfoUsuarioLogado, getInfoUsuarioLogado] = useState('')
 
   // controla se o form de login deve ser exibido, isso vai ocorrer qdo usuario nao logado
-  let [mostrarFormLogin, setMostrarFormLogin] = useState(false)
+  let [mostrarFormLogin, setMostrarFormLogin, getMostrarFormLogin] = useState(false)
   // controla o HTML da tela de login que é recebido do backend
   let [htmlFormLogin, setHtmlFormLogin] = useState('')
 
 
-  // controla se o form de registro deve ser exibido, isso vai ocorrer qdo usuario pediu para se registrar clicando no botao REGISTRAR ME (Header)
-  let [mostrarFormRegistro, setMostrarFormRegistro] = useState(false)
-  // controla o HTML da tela de registro que é recebido do backend
+  // controla se o form de registro (novo usuario) deve ser exibido, isso vai ocorrer qdo usuario pediu para se registrar clicando no botao REGISTRAR ME (Header)
+  let [mostrarFormRegistro, setMostrarFormRegistro, getMostrarFormRegistro] = useState(false)
+  // controla o HTML da tela de registro (novo usuario) que é recebido do backend
   let [htmlFormRegistro, setHtmlFormRegistro] = useState('')
 
 
@@ -67,9 +67,13 @@ function Main() {
 
 
   // *****************************************************************************
-  // codigo que sera executado apos form login ser exibido
+  // codigo que sera executado apos form login ser exibido ou ocultado
   // *****************************************************************************
-  useEffect( () => {        
+  useEffect( () => {       
+
+    // se o form de login foi exibido, faz as configuracoes jscript necessarias
+    if (! getMostrarFormLogin.current) return
+
     // prepara botao 'login' do form de login para que dispare dados do usuario para o back
     $(divLogin.current).find("button").off('click').click(function (event) {
 
@@ -86,12 +90,77 @@ function Main() {
         .catch((error) => console.log('erro='+error));  
     });
 
-    $('#loginNome').focus();    
-  }, [htmlFormLogin, mostrarFormLogin])
+    $('#loginEmail').focus();    
+  }, [mostrarFormLogin])
 
+
+  // *******************************************************************************************************************************************
+  // dependendo do valor atual da variavle 'carregando', o React remove/adiciona a div (divCarregando) que exibe a animacao de 'processando... '
+  // ao pedir para React reexibir a DIV, necessario recriar a parte jscript da animacao usando 'preparaAnimacaoCarregando()'
+  // *******************************************************************************************************************************************
+
+  useEffect( () => {       
+    preparaAnimacaoCarregando()
+  }, [carregando])
+
+
+
+  // *****************************************************************************
+  // codigo que sera executado apos form de novo usuario ser exibido ou ocultado
+  // *****************************************************************************
+  useEffect( () => {       
+
+    // se o form de registro (novo usuario) foi exibido, faz as configuracoes jscript necessarias
+    if (! getMostrarFormRegistro.current) return
+
+console.log('ai vai')
+
+    // prepara botao 'registrar' do form de registro (novo usuario) para que dispare dados do novo usuario para o back
+    $(divRegistro.current).find("button").off('click').click(function (event) {
+        setCarregando(true)
+
+        // necessario dar algusn milisegunos para que a animacao 'carregando... '  seja exibida
+        setTimeout(() => {
+            // chama rota para registrar novo usuario passando os campos definidos por ele/ela
+            fetch(`${backendUrl}/auth/registrar`,  {
+              method: 'POST',
+              headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify( {
+                nome: $('#nome').val(),
+                email: $('#email').val(),
+                senha: $('#senha').val(),
+                senha_confirmation: $('#senha_confirmation').val(),
+              })
+            })
+            .then(resposta => resposta.json()) 
+            .then(resposta => {
+              // deve haver um jeito mais inteligente de exibir o erro abaixo, mas sao 01:08 da manha, vai usando IF mesmo 
+              let erro = ''
+              let foco = ''
+              if (typeof resposta.errors.nome) {erro = resposta.errors.nome; foco = 'nome'}
+              if (typeof resposta.errors.senha) {erro = resposta.errors.senha; foco='senha'}
+              if (typeof resposta.errors.email) {erro = resposta.errors.email; foco='email'}
+      
+              if (erro!=='')  {
+                mensagemRolante(erro, 2000)
+                setTimeout(() => { $(`#${foco}`).focus()}, 100);
+              }
+
+            })
+            .catch((error) => console.log('erro='+error));  
+            setCarregando(false)
+        }, 100);
+
+    });
+
+    $('#loginNome').focus();    
+  }, [mostrarFormRegistro])
 
   // ***************************************************************************************
-  // caso usuario tenha pedido para se registrar clicando no botao REGISTRAR-ME (Header)
+  // caso usuario tenha pedido para se registrar clicando no botao REGISTRAR (Header)
   //  a funcao abaixo sera executada
    // ***************************************************************************************  
   const exibirFormRegistro = () => {
@@ -113,7 +182,7 @@ function Main() {
 
   // *****************************************************************************
   // busca no backend se ha usuario logado e junto com isso,
-  // obtem o HTML do form de login e form de registro
+  // obtem o HTML do form de login e form de registro (novo usuario)
   // para deixar amarzenado caso precise
   // *****************************************************************************
   const fetchUsuarioLogado = async () =>  {
@@ -148,6 +217,10 @@ function Main() {
 
     <>
 
+    {/* som que sera tocado qdo algum erro exibido */}
+    <audio id="beepDeErro" src="error_beep.mp3" preload="auto" autobuffer></audio>
+
+
     <div className="Conteudo">
 
       {/* context => compartilha item do menu atualmente clicado */}
@@ -168,10 +241,11 @@ function Main() {
                 { ! carregando && 
                   <Header 
                       infoUsuarioLogado={infoUsuarioLogado} 
+                      formRegistroAtivo={mostrarFormRegistro}   
+                      formLoginAtivo={mostrarFormLogin}                    
                       exibirFormRegistro={exibirFormRegistro}   
-                      mostrarFormLogin={mostrarFormLogin}
-                      mostrarFormRegistro={mostrarFormRegistro}
                       exibirFormLogin={exibirFormLogin}                     /> 
+
                 }
 
               </div>
@@ -179,7 +253,7 @@ function Main() {
               {/* se usuario nao logado ainda, mostra form de login que foi obtido do backend laravel */}
               { mostrarFormLogin && <div className='formLogin' ref={divLogin} dangerouslySetInnerHTML={{__html: htmlFormLogin}}></div> }
 
-              {/* se usuario pediu para se registrar, mostra form de registro que foi obtido do backend laravel */}
+              {/* se usuario pediu para se registrar, mostra form de registro (novo usuario) que foi obtido do backend laravel */}
               { mostrarFormRegistro && <div className='formRegistro' ref={divRegistro} dangerouslySetInnerHTML={{__html: htmlFormRegistro}}></div> }
 
           </div>

@@ -11,23 +11,13 @@ function Header( props ) {
   // obtem usuario atualmente logado que foi passado por Main.jsx
   let { infoUsuarioLogado }  = props;  
 
-/*
-  // usuario pediu para se deslogar, invoca funcao de Main.jsx que faz isso 
-  const changeBackend = ( backend ) => {
-    setCurrentBackend(backend)   // muda visualmente
-    setTimeout(() => {
-      props.onChangeBackend( backend );  
-    }, 100);
-    
-  };
-*/
 
-  // ajuda a colocar efeito HOVER nos botoes
+  // useRef => ajuda a colocar efeito HOVER nos botoes
   const btnRegistrar = useRef(null);
   const btnLogin = useRef(null);
   const btnLogout = useRef(null);
 
-  // css botoes comuns
+  // css botoes padrao
   const btnPadrao = {
     backgroundColor: '#e6e6e6', 
     color: 'black', 
@@ -45,23 +35,25 @@ function Header( props ) {
   return (
     <>
 
+        {/* detalhes do usuario logado */}
         <div style={{color: 'red', fontSize: '30px'}} >aa{  infoUsuarioLogado  } </div>
 
 
+        {/* botoes novo usuario, login, logout */}
         <div style={{ display: 'flex', flexDirection: 'row', gap: '30px', paddingRight: '20px' }}>
 
             {/* se ja nao estiver mostrando form de registro, oferece botao 'REGISTRAR-ME' */}
-            { ! props.mostrarFormRegistro && 
+            { ! props.formRegistroAtivo && 
               <button ref={btnRegistrar} style = {btnPadrao}  
                   onMouseEnter={ () => {btnRegistrar.current.style.border ='solid 2px gray'} } 
                   onMouseLeave={ () => {btnRegistrar.current.style.border ='solid 2px transparent'} }   
                   onClick={ () => {props.exibirFormRegistro()} } >
-                Registrar-me
+                Novo Usuário
               </button> 
             }
 
             {/* se ja nao estiver mostrando form de login e nao houver usuario logado, oferece botao 'LOGIN' */}
-            { infoUsuarioLogado==='' && ! props.mostrarFormLogin && 
+            { infoUsuarioLogado==='' && ! props.formLoginAtivo && 
                 <button ref={btnLogin} style = {btnPadrao} 
                     onMouseEnter={ () => {btnLogin.current.style.border ='solid 2px gray'} } 
                     onMouseLeave={ () => {btnLogin.current.style.border ='solid 2px transparent'} }   

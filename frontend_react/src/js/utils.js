@@ -1,6 +1,7 @@
 
 import 'spin.js/spin.css';
 import {Spinner} from 'spin.js';
+import $ from 'jquery'
 
 
 const preparaAnimacaoCarregando = () => {
@@ -46,4 +47,25 @@ const  stringEhJson = (string) => {
 
 }
 
-export { preparaAnimacaoCarregando, stringEhJson };
+
+
+/************************************************************************************************************************************************************
+exibe mensagem rolante por alguns segundos, usado principalmente para informar erros
+************************************************************************************************************************************************************/
+const mensagemRolante = (html, time) => {
+
+  let divRolante = $('#msgRolanteErros')
+  divRolante.html('&nbsp;&nbsp;&nbsp;&nbsp;' + html);
+  divRolante.show("slide", { direction: "left" }, 200);
+
+  setTimeout(function () { divRolante.hide("slide", { direction: "right" }, 200); }, time);
+
+  // toca beep
+  //var thissound = $('#beepDeErro');
+  //if (thissound['play']) thissound.play();
+}
+
+
+
+
+export { preparaAnimacaoCarregando, stringEhJson, mensagemRolante };
