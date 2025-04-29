@@ -9,29 +9,32 @@ use Illuminate\Support\Facades\Auth;
 class AuthController extends Controller
 {
     
-
     // ****************************************************************************************
-    // verifica se ha usuario logado
+    // verifica se ha usuario logado e retorna seus dados
+    // alem disso, retorna o HTML do form de login e de registro  
+    // para que o frontend tenha disponivel caso precise
     // ****************************************************************************************
     public function verificarLogado  () {
+      $detalhesUsuario = '';
       if (Auth::check()) { 
         $detalhesUsuario = Auth::user()->name . ';' . csrf_token() ;
-
-        return response($detalhesUsuario, 200)
-			    ->header('Content-Type', 'text/plain');
       }
 
-      else {
-        return view('auth.form_login');
-      }
+      // concatena HTML dos forms login e registro
+      $htmlFormLogin = view('auth.form_login')->render();
+      $htmlFormRegistro = view('auth.form_registro')->render();
+
+      // quem separa as informacoes é a string '|||'
+      return response($detalhesUsuario . '|||'. $htmlFormLogin . '|||' . $htmlFormRegistro, 200)
+        ->header('Content-Type', 'text/plain');
+
     }
 
 
     // ****************************************************************************************
     // tenta login baseado no email e senha recebidos do front
     // ****************************************************************************************
-    public function tentarLogin  () {
-
+    public function tentarLogin ()  {
         return view('auth.teste');
     }
 

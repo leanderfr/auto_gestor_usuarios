@@ -1,5 +1,5 @@
 
-import { useState, useContext } from 'react';
+import { useState, useContext, useRef } from 'react';
 import '../css/index.css';
 import {  ContextoCompartilhado } from './Main.jsx';
 
@@ -9,7 +9,7 @@ import {  ContextoCompartilhado } from './Main.jsx';
 function Header( props ) {
 
   // obtem usuario atualmente logado que foi passado por Main.jsx
-  let { nomeUsuarioAtual, tokenUsuarioAtual }  = props;  
+  let { infoUsuarioLogado }  = props;  
 
 /*
   // usuario pediu para se deslogar, invoca funcao de Main.jsx que faz isso 
@@ -22,11 +22,63 @@ function Header( props ) {
   };
 */
 
+  // ajuda a colocar efeito HOVER nos botoes
+  const btnRegistrar = useRef(null);
+  const btnLogin = useRef(null);
+  const btnLogout = useRef(null);
+
+  // css botoes comuns
+  const btnPadrao = {
+    backgroundColor: '#e6e6e6', 
+    color: 'black', 
+    textAlign: 'center', 
+    width: '150px', 
+    height: '30px', 
+    borderRadius: '5px', 
+    border: '2px solid transparent',
+    paddingLeft: '10px',
+  };
+
+
+
 
   return (
     <>
 
-    <div className='color: red, fontSize: 30px'>{ nomeUsuarioAtual  } </div>
+        <div style={{color: 'red', fontSize: '30px'}} >aa{  infoUsuarioLogado  } </div>
+
+
+        <div style={{ display: 'flex', flexDirection: 'row', gap: '30px', paddingRight: '20px' }}>
+
+            {/* se ja nao estiver mostrando form de registro, oferece botao 'REGISTRAR-ME' */}
+            { ! props.mostrarFormRegistro && 
+              <button ref={btnRegistrar} style = {btnPadrao}  
+                  onMouseEnter={ () => {btnRegistrar.current.style.border ='solid 2px gray'} } 
+                  onMouseLeave={ () => {btnRegistrar.current.style.border ='solid 2px transparent'} }   
+                  onClick={ () => {props.exibirFormRegistro()} } >
+                Registrar-me
+              </button> 
+            }
+
+            {/* se ja nao estiver mostrando form de login e nao houver usuario logado, oferece botao 'LOGIN' */}
+            { infoUsuarioLogado==='' && ! props.mostrarFormLogin && 
+                <button ref={btnLogin} style = {btnPadrao} 
+                    onMouseEnter={ () => {btnLogin.current.style.border ='solid 2px gray'} } 
+                    onMouseLeave={ () => {btnLogin.current.style.border ='solid 2px transparent'} }   
+                    onClick={ () => {props.exibirFormLogin()} } >
+                  Login
+                </button> 
+	          }
+
+            {/* se houver usuario logado, oferece botao 'LOGOUT' */}
+            { infoUsuarioLogado!=='' && 
+                <button ref={btnLogout} style = {btnPadrao} 
+                    onMouseEnter={ () => {btnLogout.current.style.border ='solid 2px gray'} } 
+                    onMouseLeave={ () => {btnLogout.current.style.border ='solid 2px transparent'} }   >
+                  Logout
+                </button> 
+            }
+        </div>
 
     </>
   );

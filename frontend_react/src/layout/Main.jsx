@@ -30,87 +30,116 @@ function Main() {
   // controla exibicao da animacao 'carregando...'
   let [carregando, setCarregando] = useState(true)
 
-  // controla info do usuario atualmente logado
-  let [nomeUsuarioAtual, setNomeUsuarioAtual] = useState('')
-  let [tokenUsuarioAtual, setTokenUsuarioAtual] = useState('')
+  // controla info do usuario atualmente logado (se alguem estiver logado, claro)
+  let [infoUsuarioLogado, setInfoUsuarioLogado, getInfoUsuarioLogado] = useState('')
 
-  // controla se é necessario exibir a tela de login
-  let [oferecerFormLogin, setOferecerFormLogin] = useState(false)
-
+  // controla se o form de login deve ser exibido, isso vai ocorrer qdo usuario nao logado
+  let [mostrarFormLogin, setMostrarFormLogin] = useState(false)
   // controla o HTML da tela de login que é recebido do backend
   let [htmlFormLogin, setHtmlFormLogin] = useState('')
 
- const divLogin = useRef(null); 
 
+  // controla se o form de registro deve ser exibido, isso vai ocorrer qdo usuario pediu para se registrar clicando no botao REGISTRAR ME (Header)
+  let [mostrarFormRegistro, setMostrarFormRegistro] = useState(false)
+  // controla o HTML da tela de registro que é recebido do backend
+  let [htmlFormRegistro, setHtmlFormRegistro] = useState('')
+
+
+
+  // ponteiro para a DIV do form login, para poder monitorar o botao 'submit'
+  const divLogin = useRef(null); 
+
+  // ponteiro para a DIV do form registro, para poder monitorar o botao 'submit'
+  const divRegistro = useRef(null); 
 
   // *****************************************************************************
-  // codigo que sera executado apos HTML ter sido carregado
+  // codigo que sera executado apos HTML (Main.jsx) ter sido carregado
   // *****************************************************************************
   useEffect( () => {      
       preparaAnimacaoCarregando()  
   
       // verifica se ha usuario logado
-      if ( nomeUsuarioAtual.current == null )    
+      if ( infoUsuarioLogado.current == null )    
         setTimeout(() => {
-          fetchUsuarioAtual()    
+          fetchUsuarioLogado()    
         }, 500);
-  }, [nomeUsuarioAtual])
+  }, [infoUsuarioLogado])
 
 
   // *****************************************************************************
-  // codigo que sera executado apos form login for exibido
+  // codigo que sera executado apos form login ser exibido
   // *****************************************************************************
-  useEffect( () => {      
+  useEffect( () => {        
+    // prepara botao 'login' do form de login para que dispare dados do usuario para o back
     $(divLogin.current).find("button").off('click').click(function (event) {
 
-      fetch(`${backendUrl}/auth/login`,  {
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json, text/plain, */*',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({a: 7, str: 'Some string: &=&'})
-      })
-      .then(res => res.json()) 
-      .then(res => console.log(res))
-      .catch((error) => console.log('erro='+error));
-
-
+        fetch(`${backendUrl}/auth/login`,  {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json, text/plain, */*',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({a: 7, str: 'Some string: &=&'})
+        })
+        .then(res => res.json()) 
+        .then(res => console.log(res))
+        .catch((error) => console.log('erro='+error));  
     });
 
     $('#loginNome').focus();    
-  }, [htmlFormLogin])
+  }, [htmlFormLogin, mostrarFormLogin])
+
+
+  // ***************************************************************************************
+  // caso usuario tenha pedido para se registrar clicando no botao REGISTRAR-ME (Header)
+  //  a funcao abaixo sera executada
+   // ***************************************************************************************  
+  const exibirFormRegistro = () => {
+    setMostrarFormLogin(false);
+    setMostrarFormRegistro(true);
+  }
+
+
+  // ***************************************************************************************
+  // caso usuario tenha pedido para se logar clicando no botao LOGIN (Header)
+  //  a funcao abaixo sera executada
+  // ***************************************************************************************  
+  const exibirFormLogin = () => {
+    setMostrarFormRegistro(false);
+    setMostrarFormLogin(true);
+  }
+
 
 
   // *****************************************************************************
-  // busca no backend se ha usuario logado
+  // busca no backend se ha usuario logado e junto com isso,
+  // obtem o HTML do form de login e form de registro
+  // para deixar amarzenado caso precise
   // *****************************************************************************
-  const fetchUsuarioAtual = async () =>  {
+  const fetchUsuarioLogado = async () =>  {
     fetch(`${backendUrl}/auth/verificar`)
     .then((response) => {
-        const contentType = response.headers.get("Content-Type")
-
-        // se usuario logado, backend enviou sua info em formato JSON
-        if (contentType && contentType.includes("application/json")) return response.json()
-
-        // caso contrario, backend enviou o HTML do form de login
-        if (contentType && contentType.includes("text/html")) return response.text()
+        return response.text()
     })
     .then((data) => {
 
-      if (stringEhJson(data)) console.log('usu logado')
+      if (stringEhJson(data)) {
+        console.log('usu logado')
+      }
       else {
-        // nao ha usuario logado, backend enviou html do form de login 
-        // o backend nao sabe qual URI do frontend, substituindo abaixo
-        data = data.replace('@frontendUri', window.location.href.slice(0, -1))   // remove ultimo '/'
+        // backend enviou info usuario logado (caso exista)|||html form login|||html form registro
+        let info = data.split('|||')   // separador das informacoes = |||
 
-        setHtmlFormLogin(data)
-        setOferecerFormLogin(true)        
+        // memoriza HTML dos forms registro/login  caso precise usa los
+        setInfoUsuarioLogado( info[0])   // se nao ha usuario logado, a string vai vir em branco
+        setHtmlFormLogin( info[1] )
+        setHtmlFormRegistro( info[2] ) 
 
+        // ja comeca exibindo fomr login caso usaurio nao logado
+        if (getInfoUsuarioLogado.current==='') setMostrarFormLogin(true)
          
         setCarregando(false);  // oculta animacao 'carregando...'
       }
-
     })
     .catch((error) => console.log('erro='+error));
   }
@@ -135,20 +164,23 @@ function Main() {
           <div className="Main">
 
               <div className='Header'>
-                {/* se esta carregando expressoes ainda, carrega Header sem dados, só parte visual */}
-                { carregando && 
-                  <Header  /> }
-
-                {/* se ja verificou usuario atual, carrega Header com exibindo seus dados */}
-                { nomeUsuarioAtual && 
-                  <Header nomeUsuarioAtual={nomeUsuarioAtual}
-                  //  onChangeLanguage={changeLanguageAndReload}                 
-                  /> }
+                {/* se nao ha usuario logado, carrega Header com os botoes Registrar e Login  */}
+                { ! carregando && 
+                  <Header 
+                      infoUsuarioLogado={infoUsuarioLogado} 
+                      exibirFormRegistro={exibirFormRegistro}   
+                      mostrarFormLogin={mostrarFormLogin}
+                      mostrarFormRegistro={mostrarFormRegistro}
+                      exibirFormLogin={exibirFormLogin}                     /> 
+                }
 
               </div>
 
               {/* se usuario nao logado ainda, mostra form de login que foi obtido do backend laravel */}
-              { oferecerFormLogin && <div className='formLogin' ref={divLogin} dangerouslySetInnerHTML={{__html: htmlFormLogin}}></div> }
+              { mostrarFormLogin && <div className='formLogin' ref={divLogin} dangerouslySetInnerHTML={{__html: htmlFormLogin}}></div> }
+
+              {/* se usuario pediu para se registrar, mostra form de registro que foi obtido do backend laravel */}
+              { mostrarFormRegistro && <div className='formRegistro' ref={divRegistro} dangerouslySetInnerHTML={{__html: htmlFormRegistro}}></div> }
 
           </div>
 
