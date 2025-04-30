@@ -498,5 +498,90 @@ color:black;
 .ItemMenuClicado:hover {
 font-size: '20px';
 cursor:pointer;
-
 }
+
+/****************************************************************************
+ input.text padrao quando sozinho na linha
+****************************************************************************/
+input[type="text"].text_formFieldValue {
+    font-size: 1em;
+    vertical-align: middle;
+    border-top: 1px solid rgb(146, 186, 167);
+    border-bottom: 1px solid rgb(146, 186, 167);
+    border-left: 1px solid rgb(146, 186, 167);
+    border-right: 1px solid rgb(146, 186, 167);
+    background-color: white;
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    cursor: pointer;
+    margin-left: 15px;
+    padding-left: 5px;
+    line-height: 25px;;
+    height: 25px;;
+    color: black;
+    width: 100%;
+} 
+input[type="text"].text_formFieldValue:hover {
+    border-color: green;
+    background-color: #e6e6ff;
+}
+input[type="text"].text_formFieldValue:focus {
+    background-color: #ffffcc;
+    border-color: green;
+}
+
+.span_formFieldValue {
+    font-size: 1.1em;
+    cursor: pointer;
+    margin-top:10px;
+
+    color: black;
+    font-weight: bold;
+    line-height: 25px;
+    width: 100%;
+}
+
+
+/***************************************************************************************************************************
+TAILWIND 
+***************************************************************************************************************************/
+#divWINDOW_TOP {
+    @apply flex flex-row w-full h-[40px] bg-gray-300 leading-10 items-center justify-between cursor-pointer rounded-t-lg;
+}
+
+
+#divWINDOW_TITLE {
+    font-size: 1.2em;
+    color: black;
+    margin-left: 20px;
+}
+
+.divWINDOW_BUTTON {
+    font-size: 1.3em;
+    cursor: pointer;
+    color: black;
+}
+.divWINDOW_BUTTON:hover {
+    background-color: #f2f2f2;
+    cursor: pointer;
+}
+
+button.btnCANCEL {
+    @apply bg-gray-300 border-transparent border-[1px] text-black  text-center h-[30px] cursor-pointer w-[150px] hover:border-black
+ bg-icon-button-cancel  bg-auto bg-no-repeat  bg-position-left-corner-icon  pt-[2px] rounded-[6px];
+}
+
+
+button.btnSAVE {
+    @apply bg-blue-500 border-transparent border-[1px] text-white  text-center h-[30px] cursor-pointer w-[170px] hover:border-red-950
+ bg-icon-button-save  bg-auto bg-no-repeat  bg-position-left-corner-icon  pt-[2px] pl-9 rounded-[6px];
+}
+
+button.btnDELETE {
+    @apply bg-red-500 border-transparent border-[1px] text-white  text-center h-[30px] cursor-pointer w-auto  hover:border-red-950
+ bg-icon-button-delete  bg-auto bg-no-repeat  bg-position-left-corner-icon  pt-[2px] pl-9 rounded-[6px] px-[20px];
+}
+
+

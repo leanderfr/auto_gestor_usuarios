@@ -2,13 +2,13 @@
 import '../css/index.css';
 import {  useEffect } from 'react';
 import {  backendUrl } from './Main.jsx';
+import $ from 'jquery'
 
 // useState de 'Aminadav Glickshtein' permite 3o parametro para obter estado atual da variavel
 // fazer isso com useState padrao do react é muito complicado
 import useState from 'react-usestateref'
 
-import { preparaAnimacaoCarregando  } from '../js/utils.js';
-
+import { preparaAnimacaoCarregando, mensagemRolante  } from '../js/utils.js';
 
 function UsuarioForm( props )    {
     
@@ -16,17 +16,25 @@ function UsuarioForm( props )    {
     let [usuario, setUsuario, getUsuario] = useState(null)
 
     // obtem detalhes sobre qual registro editar
-    const {operacao, recordId, tabela} = props;
+    const {operacao, registroId, tabela} = props;
 
+    const ajuda = () => {
+      mensagemRolante('Algum texto informativo aqui...', 2000)
+    }
 
     // carrega html do formulario
     const fetchUsuario = async () =>  {
         // monta formulario
-        fetch(`${backendUrl}/usuarios/${recordId}`, { method: "GET" })
+        fetch(`${backendUrl}/usuarios/${registroId}`, { method: "GET" })
         .then((response) => response.json())
         .then((data) => {
             setTimeout(() => {
-            setUsuario(data)  
+              setUsuario(data)  
+
+              setTimeout(() => {
+                $('#txtNome').focus()
+              }, 10);
+
             }, 500);
 
           props.setCarregando(false)
@@ -59,8 +67,6 @@ function UsuarioForm( props )    {
     { usuario && 
       <div className='panoFundoCinza'  onClick={fecharFormCrud}>     
 
-
-
       {/* container do form edicao */}
       <div  class="flex flex-col w-[70%] max-w-[1200px] overflow-hidden pt-8 font-Roboto"  id='recordForm'>
 
@@ -72,13 +78,13 @@ function UsuarioForm( props )    {
               <div id='divWINDOW_TOP'>
                 
                 <div id='divWINDOW_TITLE'>
-                  { operacao=='post' && 'Novo Usuário' }
-                  { operacao=='patch' && 'Editar Usuário' }
-                  { operacao=='delete' && 'Excluir Usuário' }
+                  { operacao==='post' && 'Novo Usuário' }
+                  { operacao==='patch' && 'Editar Usuário' }
+                  { operacao==='delete' && 'Excluir Usuário' }
                 </div>
 
                 <div class='flex flex-row '>
-                    <div class='divWINDOW_BUTTON mr-2'  aria-hidden="true" >
+                    <div class='divWINDOW_BUTTON mr-2'  aria-hidden="true" onClick={ () => {ajuda()}} >
                       &nbsp;&nbsp;[ ? ]&nbsp;&nbsp;
                     </div>
 
@@ -90,24 +96,25 @@ function UsuarioForm( props )    {
               </div>
 
               {/* campos  do formulario */}
-              <div class="flex flex-col w-full h-auto  px-4 mt-6" >
+              <div class="flex flex-col w-full h-auto pr-12 pl-6 pt-8 pb-14" >
 
                 <div class="flex flex-row w-full gap-5">
 
-                  <div class="flex flex-col w-1/2">
-                    <div class="flex flex-col w-full"> 
-                        <div>Nome:</div>  
-                        <div>
+                  <div class="flex flex-col w-full">
+                    <div class="flex flex-row w-full "> 
+                        <div style={{paddingTop:'3px'}} >Nome:</div>  
+                        <div class='flex grow'>
                           { operacao=='delete' &&
                             <span class='span_formFieldValue' id='txtName'>&nbsp;</span> }
-                          { operacao!=='delete' && 
+                          { operacao!='delete' && 
                             <input 
                                 type="text" 
-                                autocomplete="off" 
-                                maxlength='50' 
-                                minlength='3' 
-                                id="txtNome" 
+                                autoComplete="off" 
+                                maxLength='50' 
+                                minLength='3' 
+                                id="txtNome"                                 
                                 defaultValue={ usuario.name }  
+                                onFocus={(e)=>{e.target.select()}}
                                 class='text_formFieldValue'  />
                           }                                
                         </div>
@@ -135,27 +142,8 @@ function UsuarioForm( props )    {
 
       </div> 
 
-
-
-
-
-
-
-
-
-
-
-
-            <div className='crudForm'>
-
-                <div className='flex flex-col px-3'>
-                  <label htmlFor='txtName'>Nome:</label>
-                  <input name='txtName'  />
-                </div>
-
-            </div>
-        </div>
-
+      {/* fim pano cinza */}
+      </div>   
 
       }
 

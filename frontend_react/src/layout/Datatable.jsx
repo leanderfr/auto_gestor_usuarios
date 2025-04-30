@@ -134,7 +134,7 @@ function Datatable( props ) {
                           {/* exibe ultima, acoes (1a condicao abaixo) ou outras colunas (2a condicao abaixo) */}
                           {j===length-1 ? (
                                 <div  className='actionColumn' style= {{ width: col.width}}  >
-                                    <div className='actionIcon' onClick={ () => Crud('post', registro.id) } ><img alt='' src='images/edit.svg' /></div>
+                                    <div className='actionIcon' onClick={ () => Crud('patch', registro.id) } ><img alt='' src='images/edit.svg' /></div>
                                     <div className='actionIcon' onClick={ () => Crud('delete', registro.id) }><img alt='' src='images/delete.svg' /></div>
                                     <div className='actionIcon' onClick={ () => Crud('status', registro.id) }><img alt='' src='images/activate.svg' /></div>
                                 </div>  ) : 
