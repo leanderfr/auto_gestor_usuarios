@@ -227,6 +227,15 @@ function UsuarioForm( props )    {
 
                 </div>
 
+                <div class="flex flex-row w-full gap-5 mt-3">
+                  <div class="flex flex-row w-full "> 
+                    <div style={{paddingTop:'3px'}} >Email:</div>  
+                    <div class='flex grow'> 
+                        <span class='span_formFieldValue' >{ usuario.email }</span>
+                    </div>
+                  </div>
+                </div>
+
                 <div style = {{  display: 'flex', flexDirection: 'column', gap: '20px' , marginTop: '40px',  width: '100%' }}>
 
                     <div style = {{  display: 'flex', flexDirection: 'row', gap: '30px', width: '100%' }}>

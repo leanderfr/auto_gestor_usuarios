@@ -25,7 +25,7 @@ function MenuLateral( props ) {
         
 
       {/* opcoes que so administrador tem */}
-      { props.infoUsuarioLogado.administrador && 
+      { props.infoUsuarioLogado.administrador==1 && 
          <ItemMenu itemMenuAtual={itemMenuAtual} id='itemMenuUsuarios' text='Usuários' setItemMenuAtual ={props.setItemMenuAtual}  /> 
       } 
 

@@ -19,19 +19,20 @@ function Datatable( props ) {
 
   // manipulando tabela de usuarios
   let titulo = ''
-  if (itemMenuAtual === 'itemMenuUsuarios')  {
-    columns.push({ fieldname: "id", width: "5%", title: 'Id', id: 1, boolean: false },
-                { fieldname: "name", width: "calc(35% - 150px)", title: 'Nome', id: 2, boolean: false} ,
-                { fieldname: "administrador", width: "15%", title: 'Administrador', id: 3, boolean: true} ,
-                { fieldname: "gestao_produtos", width: "15%", title: 'Produtos', id: 4, boolean: true} ,
-                { fieldname: "gestao_marcas", width: "15%", title: 'Marcas', id: 5, boolean: true} ,
-                { fieldname: "gestao_categorias", width: "15%", title: 'Categorias', id: 6, boolean: true} 
-    )
+  if (itemMenuAtual === 'itemMenuUsuarios')   {
+    columns.push({ fieldname: "id", width: "5%", title: 'Id', id: 'col1', boolean: false },
+                { fieldname: "name", width: "calc(35% - 150px)", title: 'Nome', id: 'col2', boolean: false} ,
+                { fieldname: "administrador", width: "15%", title: 'Administrador', id: 'col3', boolean: true} ,
+                { fieldname: "gestao_produtos", width: "15%", title: 'Produtos', id: 'col4', boolean: true} ,
+                { fieldname: "gestao_marcas", width: "15%", title: 'Marcas', id: 'col5', boolean: true} ,
+                { fieldname: "gestao_categorias", width: "15%", title: 'Categorias', id: 'col6', boolean: true} )
+      titulo = 'Usuários'
+    }
+    if (itemMenuAtual === 'itemMenuProdutos')  titulo = 'Produtos'
+    if (itemMenuAtual === 'itemMenuCategorias')   titulo = 'Categorias'
+    if (itemMenuAtual === 'itemMenuMarcas')    titulo = 'Marcas'
 
-
-    titulo = 'Usuários'
-  }
-
+  
   // ultima coluna, acoes (editar, excluir, etc)
   columns.push( {name: 'actions', width: '150px', title: '', id: 3} )
   
@@ -60,6 +61,12 @@ function Datatable( props ) {
     }
 
     // exemplo rota:  localhost/usuarios/lista
+    if (resourceFetch != 'usuarios') {
+      props.setCarregando(false)
+//      setRegistros({})
+      return;
+    }
+
     fetch(`${backendUrl}/${resourceFetch}/lista`, { 
       method: "GET" ,
       headers: {
@@ -151,7 +158,6 @@ function Datatable( props ) {
         })}
     </div>          
 
-
     {/* looping para exibir registros da tabela atual */}
     <div className="DatatableRows">
       {/* percorre os registros */}
@@ -164,7 +170,7 @@ function Datatable( props ) {
                 /* exbe cada coluna do registro atual  */
                 columns.map(function (col, j, {length}) {
                     return( 
-                      <Fragment key={`frag${registro.id}${col.id}`} >
+                      <Fragment key={`frag${registro.id}-${col.id}`} >
                           {/* exibe ultima, acoes (1a condicao abaixo) ou outras colunas (2a condicao abaixo) */}
                           {j===length-1 ? (
                             <>
@@ -185,7 +191,6 @@ function Datatable( props ) {
                               }
                             </> ) : (
                                 <>
-
                                     {col.boolean && registro[col.fieldname]==1 &&                   
                                       <div style={{width: col.width, paddingLeft: '5px'}}>Sim</div>
                                     }

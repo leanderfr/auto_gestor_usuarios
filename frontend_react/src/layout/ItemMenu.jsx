@@ -6,7 +6,7 @@ function ItemMenu( {setItemMenuAtual, itemMenuAtual, text, id} ) {
   return (
     <div 
         className={ itemMenuAtual===id ? 'ItemMenuClicado' : 'ItemMenu'  }
-        onClick={() => {console.log('lll'); setItemMenuAtual(id) }}
+        onClick={() => {setItemMenuAtual(id) }}
       >
       {text}
     </div>

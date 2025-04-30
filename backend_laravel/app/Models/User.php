@@ -25,6 +25,7 @@ class User extends Authenticatable
         'email',
         'password',
         'ativo',
+        'administrador',
         'gestao_produtos',
         'gestao_marcas',
         'gestao_categorias',

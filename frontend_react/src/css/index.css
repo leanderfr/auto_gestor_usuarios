@@ -132,9 +132,10 @@ input:checked + .slider_language:before {
 .Datatable {
   display: flex;
   flex-direction: column;
-  flex: 1;
+  height:80%;
   background-color: white;
   padding:20px;
+  overflow: visible;
 }
 
 .ItemMenu {
@@ -376,8 +377,10 @@ background-color:  #FFC266
   background-color: white;
   width: 100%;
   color: black;
-  height: 40px;
   align-items: center;
+  height: 100%;
+  overflow: auto;
+  border-bottom: solid 1px lightgray;
 }
 
 .DatatableRow {
@@ -386,7 +389,7 @@ background-color:  #FFC266
   width:100%;
   cursor: pointer;
   line-height: 40px;
-}
+  }
 .DatatableRow:hover {
 background-color:  #FFC266
 }

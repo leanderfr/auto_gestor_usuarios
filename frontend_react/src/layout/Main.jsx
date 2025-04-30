@@ -216,6 +216,10 @@ const prepararFormLogin = () => {
               password: $('#password').val(),
               password_confirmation: $('#password_confirmation').val(),
               ativo: 1,
+              administrador: 0,
+              gestao_produtos: 1,
+              gestao_marcas: 1,
+              gestao_categorias: 1,
           })
               
           setCarregando(true)

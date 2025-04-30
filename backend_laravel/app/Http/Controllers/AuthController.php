@@ -45,6 +45,10 @@ class AuthController extends Controller implements HasMiddleware
         'email' => 'required|email|string|unique:users|max:150', 
         'password' => 'required|string|min:3|max:50|confirmed',
         'ativo' => '',
+        'gestao_produtos' => '',
+        'gestao_marcas' => '',
+        'gestao_categorias' => '',
+        'administrador' => '',
       ];
 
       $regOK = $request->validate($camposGravar, $erros);
