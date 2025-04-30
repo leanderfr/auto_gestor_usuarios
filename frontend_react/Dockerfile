@@ -13,6 +13,6 @@ EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
 
 
-# docker build --rm -t devs-react .
+# docker build --rm -t autogestor_react .
 
-#  docker run -p 3001:80 devs-react
+#  docker run -p 3001:80 autogestor_react

@@ -9,21 +9,22 @@ use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Gate;
 
-class AuthController extends Controller implements HasMiddleware
+//class AuthController extends Controller implements HasMiddleware
+class AuthController extends Controller 
 {
 
   // *************************************************************************************************************
   // Middleware('auth:sanctum') define que para executar qq funcao abaixo , é necessario estar logado
   // funcoes definidas em except, nao precisa
   // *************************************************************************************************************
-
+/*
   public static function middleware() 
   {
     return [
       new Middleware('auth:sanctum')->except(['lista', 'login', 'forms', 'registrar'])
     ];
   }
-
+*/
   // *************************************************************************************************************
   // *************************************************************************************************************
 
