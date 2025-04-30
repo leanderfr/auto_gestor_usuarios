@@ -52,6 +52,7 @@ class AuthController extends Controller implements HasMiddleware
       // cria token que sera enviado pelo front a cada requisicao do usuario criado
       $token = $usuario->createToken($request->name);
  
+      // devolve token para react usa lo nas requisicoes que exigem usuario logado
       return [
         'token' => $token->plainTextToken,
         'usuario' => $usuario,
@@ -85,6 +86,7 @@ class AuthController extends Controller implements HasMiddleware
       // cria token que sera enviado pelo front a cada requisicao do usuario logado
       $token = $usuario->createToken($usuario->name);
  
+      // devolve token para react usa lo nas requisicoes que exigem usuario logado
       return [
         'token' => $token->plainTextToken,
         'usuario' => $usuario,
@@ -100,9 +102,7 @@ class AuthController extends Controller implements HasMiddleware
   public function logout(Request $request) {    
     $request->user()->tokens()->delete();
 
-    return( [
-          'erro' => 'Você foi deslogado'
-        ]);  
+    return( 'Você foi deslogado com sucesso!' );  
   }
 
   // *************************************************************************************************************

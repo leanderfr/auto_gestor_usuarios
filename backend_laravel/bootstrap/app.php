@@ -1,6 +1,9 @@
 <?php
 
 // permtite APIS da aplicacao front end
+// o certo seria definir somente a URL da aplicacao front end definitiva
+// mas como o pessoal da AutoGestor pode executar localmente,
+// eh necessario liberar acesso a qq URL de frontend
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: *');
 header('Access-Control-Allow-Headers: *');
