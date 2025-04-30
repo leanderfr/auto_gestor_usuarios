@@ -6,14 +6,15 @@ import {  ContextoCompartilhado } from './Main.jsx';
 
 
 
-function MenuLateral() {
+function MenuLateral( props ) {
 
   // expressions só poderá ser usada quando Main.jsx enviar seu conteudo diferente de 'null'
-  let { _expressions }  = useContext(ContextoCompartilhado);  
+  let { _itemMenuAtual, infoUsuarioLogado }  = useContext(ContextoCompartilhado);  
 
   return (
 
     <>
+      {/* logotipo AutoGestor */}
       <div className='logoAutoGestor'>
         <img src='images/logo_autogestor.svg' alt='' style={{ width: '150px', paddingTop: '10px'}} />
         <div style={{  display: 'flex', flexDirection: 'column', alignItems : 'flex-start', width: '100%' }}>
@@ -21,9 +22,18 @@ function MenuLateral() {
             <span >Desenvolvido por: Leander Früchting</span>
         </div>
       </div>
+        
 
-      { _expressions!=null && <ItemMenu id='itemMenuDevelopers' text={_expressions.developers}  /> } 
-      { _expressions!=null && <ItemMenu id='itemMenuLanguages' text={_expressions.languages} /> } 
+      {/* opcoes que so administrador tem */}
+      { props.infoUsuarioLogado.administrador && 
+         <ItemMenu id='itemMenuUsuarios' text='Usuários'  /> 
+      } 
+
+      {/* opcoes de usuario comum e suas permissoes */}
+      { ! props.infoUsuarioLogado.administrador && props.infoUsuarioLogado.gestao_produtos && <ItemMenu id='itemMenuProdutos' text='Produtos' /> }
+      { ! props.infoUsuarioLogado.administrador && props.infoUsuarioLogado.gestao_categorias && <ItemMenu id='itemMenuCategorias' text='Categorias' />  }
+      { ! props.infoUsuarioLogado.administrador && props.infoUsuarioLogado.gestao_marcas && <ItemMenu id='itemMenuMarcas' text='Marcas' /> }
+
     </>        
   );
 }

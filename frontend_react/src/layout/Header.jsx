@@ -1,7 +1,6 @@
 
-import { useState, useContext, useRef } from 'react';
+import { useRef } from 'react';
 import '../css/index.css';
-import {  ContextoCompartilhado } from './Main.jsx';
 
 
 // props= recebe funcoes que fazem a comunicacao entre Header.jsx e Main.jsx
@@ -9,7 +8,7 @@ import {  ContextoCompartilhado } from './Main.jsx';
 function Header( props ) {
 
   // obtem usuario atualmente logado que foi passado por Main.jsx
-  let { nomeUsuarioLogado }  = props;  
+  let { infoUsuarioLogado }  = props;  
 
 
   // useRef => ajuda a colocar efeito HOVER nos botoes
@@ -36,14 +35,14 @@ function Header( props ) {
     <>
 
         {/* detalhes do usuario logado */}
-        <div id='nomeUsuarioLogado' style={{color: 'red', fontSize: '30px'}} >aa{  nomeUsuarioLogado  } </div>
+        <div id='nomeUsuarioLogado' style={{color: 'red', fontSize: '30px'}} >{  infoUsuarioLogado.nome  } </div>
 
 
         {/* botoes novo usuario, login, logout */}
         <div style={{ display: 'flex', flexDirection: 'row', gap: '30px', paddingRight: '20px' }}>
 
-            {/* se ja nao estiver mostrando form de registro, oferece botao 'REGISTRAR-ME' */}
-            { ! props.formRegistroAtivo && 
+            {/* se nao estiver mostrando form de registro, oferece botao 'REGISTRAR-ME' */}
+            { ! props.formRegistroAtivo && ! props.formRegistroAtivo &&
               <button ref={btnRegistrar} style = {btnPadrao}  
                   onMouseEnter={ () => {btnRegistrar.current.style.border ='solid 2px gray'} } 
                   onMouseLeave={ () => {btnRegistrar.current.style.border ='solid 2px transparent'} }   
@@ -52,8 +51,8 @@ function Header( props ) {
               </button> 
             }
 
-            {/* se ja nao estiver mostrando form de login e nao houver usuario logado, oferece botao 'LOGIN' */}
-            { nomeUsuarioLogado==='' && ! props.formLoginAtivo && 
+            {/* se nao estiver mostrando form de login e nao houver usuario logado, oferece botao 'LOGIN' */}
+            { infoUsuarioLogado.nome==='' && ! props.formLoginAtivo && 
                 <button ref={btnLogin} style = {btnPadrao} 
                     onMouseEnter={ () => {btnLogin.current.style.border ='solid 2px gray'} } 
                     onMouseLeave={ () => {btnLogin.current.style.border ='solid 2px transparent'} }   
@@ -63,10 +62,11 @@ function Header( props ) {
 	          }
 
             {/* se houver usuario logado, oferece botao 'LOGOUT' */}
-            { nomeUsuarioLogado!=='' && 
+            { infoUsuarioLogado.nome!=='' &&  
                 <button ref={btnLogout} style = {btnPadrao} 
                     onMouseEnter={ () => {btnLogout.current.style.border ='solid 2px gray'} } 
-                    onMouseLeave={ () => {btnLogout.current.style.border ='solid 2px transparent'} }   >
+                    onMouseLeave={ () => {btnLogout.current.style.border ='solid 2px transparent'} }   
+                    onClick={ () => {props.logout()} } >
                   Logout
                 </button> 
             }

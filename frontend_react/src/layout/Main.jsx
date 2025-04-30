@@ -30,13 +30,26 @@ function Main() {
   // controla exibicao da animacao 'carregando...'
   let [carregando, setCarregando] = useState(true)
 
-  // controla info do usuario atualmente logado (se alguem estiver logado, claro)
-  let [nomeUsuarioLogado, setNomeUsuarioLogado, getNomeUsuarioLogado] = useState('')
+  // controla detalhes do usuario logado
+  let [infoUsuarioLogado, setInfoUsuarioLogado, getInfoUsuarioLogado] = useState( 
+    {
+      nome: '',
+      token: '',
+      administrador: '',
+      gestao_categorias: '',
+      gestao_marcas: '',
+      gestao_produtos: ''
+    }
+  )
+
 
   // controla se o form de login deve ser exibido, isso vai ocorrer qdo usuario nao logado
   let [mostrarFormLogin, setMostrarFormLogin, getMostrarFormLogin] = useState(false)
   // controla o HTML da tela de login que é recebido do backend
   let [htmlFormLogin, setHtmlFormLogin] = useState('')
+  // memoriza valor atual de cada campo no fomr de login para em caso de erro ao submter form
+  let [valoresFormLogin, setValoresFormLogin, getValoresFormLogin] = useState( {email: ''} )
+
 
    // controla se o form de registro (novo usuario) deve ser exibido, isso vai ocorrer qdo usuario pediu para se registrar clicando no botao REGISTRAR ME (Header)
   let [mostrarFormRegistro, setMostrarFormRegistro, getMostrarFormRegistro] = useState(false)
@@ -44,9 +57,6 @@ function Main() {
   let [htmlFormRegistro, setHtmlFormRegistro] = useState('')
   // memoriza valor atual de cada campo no fomr de registro (novo usuario) para em caso de erro ao submter form
   let [valoresFormRegistro, setValoresFormRegistro, getValoresFormRegistro] = useState( {nome: '', email: ''} )
-
-  // memoriza token do usuario logado
-  let [tokenUsuarioLogado, setTokenUsuarioLogado, getTokenUsuarioLogado] = useState('')
 
 
   // ponteiro para a DIV do form login, para poder monitorar o botao 'submit'
@@ -81,20 +91,61 @@ function Main() {
     // prepara botao 'login' do form de login para que dispare dados do usuario para o back
     $(divLogin.current).find("button").off('click').click(function (event) {
 
+        // memoriza campos digitados caso dê erro
+        // necessario fazer isso porque o html vem do backend
+        // caso o form fosse montado aqui no front, nao seria necessario
+        setValoresFormLogin( { 
+          email: $('#email').val(),
+        })
+
+        setCarregando(true)
         fetch(`${backendUrl}/auth/login`,  {
           method: 'POST',
           headers: {
-            'Accept': 'application/json, text/plain, */*',
+            'Accept': 'application/json',
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({a: 7, str: 'Some string: &=&'})
+          body: JSON.stringify({email: $('#email').val(), password: $('#password').val()}) 
         })
-        .then(res => res.json()) 
-        .then(res => console.log(res))
+        .then(resposta => resposta.json())  
+        .then(resposta => {
+
+            setCarregando(false)
+
+            //jeito tosco de testar a resposta, mas sao 3 da manha e preciso terminar antes das 8 !!
+            // tivesse mais tmpo faria diferente
+            if  (typeof resposta.usuario=='undefined') { 
+              mensagemRolante('Usuário não existe ou senha incorreta', 2000)  // erro
+
+              // devolve campos do form login que o React limpou
+              setTimeout(() => {
+                  $('#email').val( getValoresFormLogin.current.email )                 
+              }, 100);
+
+            }
+            else {   
+                // memoriza detalhes do usuario recem logado
+                // temporariamente, para o React
+                setInfoUsuarioLogado( { 
+                  nome:  resposta.usuario.name,
+                  token:  resposta.token,
+                  administrador:  resposta.usuario.administrador,
+                  gestao_categorias:  resposta.usuario.gestao_categorias,
+                  gestao_marcas:  resposta.usuario.gestao_marcas,
+                  gestao_produtos:  resposta.usuario.gestao_produtos,
+                })
+
+                // de forma persistente, no navegador
+                localStorage.setItem("infoUsuarioLogado", JSON.stringify(getInfoUsuarioLogado.current) )
+
+                // fehca form login
+                setMostrarFormLogin(false)
+            }
+        })
         .catch((error) => console.log('erro='+error));  
     });
 
-    $('#loginEmail').focus();    
+    $('#email').focus();    
   }, [mostrarFormLogin])
 
 
@@ -171,7 +222,7 @@ function Main() {
                 setCarregando(false)
 
                 if (erro!=='')  {
-                  mensagemRolante(erro, 2000)
+                  mensagemRolante(erro, 3000)
                 
                   // deu erro ao submeter, recupera ultimos valores digitados
                   // isso ocorre porque qq alteracao visual na tela (exemplo: setCarregando)
@@ -182,12 +233,22 @@ function Main() {
                   }, 100);
                 }  
                 else {
-                  // memoriza nome (para exibir no Header) e token do usuario recem cadastrado
-                  setNomeUsuarioLogado( resposta.usuario.name )  
-                  setTokenUsuarioLogado( resposta.token )  
+                  // memoriza detalhes do usuario recem logado
+                  // temporariamente, para o React
+                  setInfoUsuarioLogado( { 
+                    nome:  resposta.usuario.name,
+                    token:  resposta.token,
+                    administrador:  resposta.usuario.administrador,
+                    gestao_categorias:  resposta.usuario.gestao_categorias,
+                    gestao_marcas:  resposta.usuario.gestao_marcas,
+                    gestao_produtos:  resposta.usuario.gestao_produtos,
+                  })
 
-                  localStorage.setItem("nomeUsuarioLogado", resposta.usuario.name)
-                  localStorage.setItem("tokenUsuarioLogado", resposta.token)
+                  // de forma persistente, no navegador
+                  localStorage.setItem("infoUsuarioLogado", JSON.stringify(getInfoUsuarioLogado.current) )
+                  // fecha forms
+                  setMostrarFormRegistro(false)
+                  setMostrarFormLogin(false)
                 }
 
                 // zera os campos do form registro (novo usuario), caso seja usado de novo
@@ -215,9 +276,8 @@ function Main() {
   }
 
   // ***************************************************************************************
-  // caso usuario tenha pedido para se registrar clicando no botao REGISTRAR (Header)
-  //  a funcao abaixo sera executada
-   // ***************************************************************************************  
+  // usuario pediu para se cadastrar
+  // ***************************************************************************************  
   const exibirFormRegistro = () => {
     setMostrarFormLogin(false);
     setMostrarFormRegistro(true);
@@ -225,13 +285,56 @@ function Main() {
 
 
   // ***************************************************************************************
-  // caso usuario tenha pedido para se logar clicando no botao LOGIN (Header)
-  //  a funcao abaixo sera executada
+    // usuario pediu para se logar ou app abriu sem usuario logado 
   // ***************************************************************************************  
   const exibirFormLogin = () => {
     setMostrarFormRegistro(false);
     setMostrarFormLogin(true);
   }
+
+  // ***************************************************************************************
+  // usuario pediu para se deslogar
+   // ***************************************************************************************  
+  const logout = () => {
+
+    setCarregando(true)
+
+
+    fetch(`${backendUrl}/auth/logout`,  {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json, text/plain, */*',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer '+ getInfoUsuarioLogado.current.token,
+      },
+    })
+    .then(res => res.text()) 
+    .then(res => {
+        setCarregando(false)
+      // maneira tosca de testar a resposta, mas preciso entregar a app, se eu tivesse tempo testaria diferente
+      mensagemRolante(res, 3000) 
+
+      if  (res.indexOf('deslogado com sucesso')!=-1) {
+        localStorage.removeItem("infoUsuarioLogado")
+
+        setInfoUsuarioLogado( { 
+          nome:  '',
+          token:  '',
+          administrador:  '',
+          gestao_categorias:  '',
+          gestao_marcas:  '',
+          gestao_produtos:  '',
+        })
+
+        // deslogou exibe form de login automaticamente
+        setMostrarFormLogin(true)
+        setMostrarFormRegistro(false)
+      }
+  
+    })
+    .catch((error) => console.log('erro='+error));  
+  }
+
 
 
   // *****************************************************************************
@@ -256,16 +359,15 @@ function Main() {
       setHtmlFormLogin( info[0] )
       setHtmlFormRegistro( info[1] ) 
 
-      // ja comeca exibindo fomr login caso usaurio nao logado
-      // guarda usuario logado no storage do navegador
-
-console.log('tk='+localStorage.getItem("tokenUsuarioLogado"))
-      if ( localStorage.getItem("tokenUsuarioLogado")==null ) setMostrarFormLogin(true)
-      else {
-          setNomeUsuarioLogado( localStorage.getItem("nomeUsuarioLogado") )  
-          setTokenUsuarioLogado( localStorage.getItem("tokenUsuarioLogado") )  
+      // se nao ha usuario logado registrado no storage do computador, ja começa exibindo form de login
+      if ( localStorage.getItem("infoUsuarioLogado")==null ) {    
+          setMostrarFormLogin(true)
+          setMostrarFormRegistro(false)
       }
-
+      // ha usuario logado registrado no browser, memoriza seus dados
+      else {
+          setInfoUsuarioLogado( JSON.parse( localStorage.getItem("infoUsuarioLogado") ) )  
+      }
         
       setCarregando(false);  // oculta animacao 'carregando...'
     })
@@ -283,10 +385,12 @@ console.log('tk='+localStorage.getItem("tokenUsuarioLogado"))
       <ContextoCompartilhado.Provider 
         value={{ 
             _itemMenuAtual: itemMenuAtual  }}  >
-
+ 
           {/* barra lateral esquerda */}
           <div className='MenuLateral'>
-                <MenuLateral  />
+                <MenuLateral  
+                    infoUsuarioLogado={infoUsuarioLogado}   
+                />
           </div>
 
           {/* header e datatable */}
@@ -296,9 +400,10 @@ console.log('tk='+localStorage.getItem("tokenUsuarioLogado"))
                 {/* se nao ha usuario logado, carrega Header com os botoes Registrar e Login  */}
                 { ! carregando && 
                   <Header 
-                      nomeUsuarioLogado={nomeUsuarioLogado} 
+                      infoUsuarioLogado={infoUsuarioLogado} 
                       formRegistroAtivo={mostrarFormRegistro}   
                       formLoginAtivo={mostrarFormLogin}                    
+                      logout={logout}   
                       exibirFormRegistro={exibirFormRegistro}   
                       exibirFormLogin={exibirFormLogin}                     /> 
                 }
@@ -337,3 +442,5 @@ console.log('tk='+localStorage.getItem("tokenUsuarioLogado"))
 }
 
 export default Main;
+
+
