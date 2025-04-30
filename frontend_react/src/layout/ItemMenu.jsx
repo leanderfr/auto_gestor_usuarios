@@ -2,10 +2,13 @@
 
 import '../css/index.css';
 
-function ItemMenu( {text, href} ) {
+function ItemMenu( {setItemMenuAtual, itemMenuAtual, text, id} ) {
   return (
-    <div className="ItemMenu">
-    {text}
+    <div 
+        className={ itemMenuAtual===id ? 'ItemMenuClicado' : 'ItemMenu'  }
+        onClick={() => {console.log('lll'); setItemMenuAtual(id) }}
+      >
+      {text}
     </div>
   );
 }

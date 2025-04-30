@@ -9,7 +9,7 @@ import {  ContextoCompartilhado } from './Main.jsx';
 function MenuLateral( props ) {
 
   // expressions só poderá ser usada quando Main.jsx enviar seu conteudo diferente de 'null'
-  let { _itemMenuAtual, infoUsuarioLogado }  = useContext(ContextoCompartilhado);  
+  let { setItemMenuAtual, itemMenuAtual, infoUsuarioLogado }  = useContext(ContextoCompartilhado);  
 
   return (
 
@@ -26,13 +26,18 @@ function MenuLateral( props ) {
 
       {/* opcoes que so administrador tem */}
       { props.infoUsuarioLogado.administrador && 
-         <ItemMenu id='itemMenuUsuarios' text='Usuários'  /> 
+         <ItemMenu itemMenuAtual={itemMenuAtual} id='itemMenuUsuarios' text='Usuários' setItemMenuAtual ={props.setItemMenuAtual}  /> 
       } 
 
       {/* opcoes de usuario comum e suas permissoes */}
-      { ! props.infoUsuarioLogado.administrador && props.infoUsuarioLogado.gestao_produtos && <ItemMenu id='itemMenuProdutos' text='Produtos' /> }
-      { ! props.infoUsuarioLogado.administrador && props.infoUsuarioLogado.gestao_categorias && <ItemMenu id='itemMenuCategorias' text='Categorias' />  }
-      { ! props.infoUsuarioLogado.administrador && props.infoUsuarioLogado.gestao_marcas && <ItemMenu id='itemMenuMarcas' text='Marcas' /> }
+      { ! props.infoUsuarioLogado.administrador && props.infoUsuarioLogado.gestao_produtos &&   
+          <ItemMenu itemMenuAtual={itemMenuAtual}  id='itemMenuProdutos' text='Produtos'  setItemMenuAtual ={props.setItemMenuAtual} /> }
+
+      { ! props.infoUsuarioLogado.administrador && props.infoUsuarioLogado.gestao_categorias && 
+          <ItemMenu itemMenuAtual={itemMenuAtual}  id='itemMenuCategorias' text='Categorias' setItemMenuAtual ={props.setItemMenuAtual} /> }
+
+      { ! props.infoUsuarioLogado.administrador && props.infoUsuarioLogado.gestao_marcas && 
+          <ItemMenu itemMenuAtual={itemMenuAtual}  id='itemMenuMarcas' text='Marcas' setItemMenuAtual ={props.setItemMenuAtual} /> }
 
     </>        
   );

@@ -479,3 +479,23 @@ padding-top: 20px;
     font-size: 1.3em;
     width: 90%;
 }
+
+
+.ItemMenuClicado {
+font-size: '20px';
+display:flex;
+width:100%;
+justify-content: start;
+padding-left: 20px;
+height:40px;
+margin-top:10px;
+align-items: center;
+align-content: center;
+background-color: white;
+color:black;
+}
+.ItemMenuClicado:hover {
+font-size: '20px';
+cursor:pointer;
+
+}

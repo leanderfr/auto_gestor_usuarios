@@ -7,7 +7,7 @@ import useState from 'react-usestateref'
 import '../css/index.css';
 
 import Header from './Header';
-//import Datatable from './Datatable';
+import Datatable from './Datatable';
 import MenuLateral from './MenuLateral.jsx';
 
 import $ from 'jquery'
@@ -25,7 +25,7 @@ export const backendUrl = 'http://localhost:8000'
 function Main() {
 
   // controla item do menu lateral (MenuLateral) atualmente clicado
-  let [itemMenuAtual, setItemMenuAtual] = useState('')
+  let [itemMenuAtual, setItemMenuAtual, getItemMenuAtual] = useState('')
 
   // controla exibicao da animacao 'carregando...'
   let [carregando, setCarregando] = useState(true)
@@ -80,6 +80,10 @@ function Main() {
   }, [])
 
 
+setTimeout(() => {
+  //setItemMenuAtual('itemMenuProdutos')
+}, 5000);
+
   // *****************************************************************************
   // codigo que sera executado apos form login ser exibido ou ocultado
   // *****************************************************************************
@@ -124,6 +128,8 @@ function Main() {
 
             }
             else {   
+                setItemMenuAtual('')
+
                 // memoriza detalhes do usuario recem logado
                 // temporariamente, para o React
                 setInfoUsuarioLogado( { 
@@ -197,6 +203,8 @@ function Main() {
           setCarregando(true)
 
           let erro = ''
+
+          setItemMenuAtual('')
 
           // necessario dar algusn milisegunos para que a animacao 'carregando... '  seja exibida
           setTimeout(() => {
@@ -299,7 +307,6 @@ function Main() {
 
     setCarregando(true)
 
-
     fetch(`${backendUrl}/auth/logout`,  {
       method: 'POST',
       headers: {
@@ -317,6 +324,7 @@ function Main() {
       if  (res.indexOf('deslogado com sucesso')!=-1) {
         localStorage.removeItem("infoUsuarioLogado")
 
+        setItemMenuAtual('')
         setInfoUsuarioLogado( { 
           nome:  '',
           token:  '',
@@ -359,7 +367,7 @@ function Main() {
       setHtmlFormLogin( info[0] )
       setHtmlFormRegistro( info[1] ) 
 
-      // se nao ha usuario logado registrado no storage do computador, ja começa exibindo form de login
+      // se nao ha usuario logado registrado no storage do navegador, ja começa exibindo form de login
       if ( localStorage.getItem("infoUsuarioLogado")==null ) {    
           setMostrarFormLogin(true)
           setMostrarFormRegistro(false)
@@ -384,12 +392,13 @@ function Main() {
       {/* context => compartilha item do menu atualmente clicado */}
       <ContextoCompartilhado.Provider 
         value={{ 
-            _itemMenuAtual: itemMenuAtual  }}  >
+            itemMenuAtual: itemMenuAtual  }}  >
  
           {/* barra lateral esquerda */}
           <div className='MenuLateral'>
                 <MenuLateral  
-                    infoUsuarioLogado={infoUsuarioLogado}   
+                    infoUsuarioLogado={infoUsuarioLogado}  
+                    setItemMenuAtual ={setItemMenuAtual}
                 />
           </div>
 
@@ -407,8 +416,13 @@ function Main() {
                       exibirFormRegistro={exibirFormRegistro}   
                       exibirFormLogin={exibirFormLogin}                     /> 
                 }
-
               </div>
+
+              { ! mostrarFormLogin && ! mostrarFormRegistro && itemMenuAtual!='' &&
+                  <div className='Datatable'>
+                    <Datatable   /> 
+                  </div>
+              }
 
               {/* se usuario nao logado ainda, mostra form de login que foi obtido do backend laravel */}
               { mostrarFormLogin && <div className='formLogin' ref={divLogin} dangerouslySetInnerHTML={{__html: htmlFormLogin}}></div> }
