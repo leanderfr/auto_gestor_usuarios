@@ -855,7 +855,7 @@ input:checked + .slider_language:before {
   align-items: center;
 }
 
-.backdropGray {
+.panoFundoCinza {
   position: absolute;
   overflow: visible;
   background-color: rgba(0,0,0,0.1);
@@ -887,7 +887,7 @@ input:checked + .slider_language:before {
   padding-top: 29px;
 }
 
-.CrudButtons {
+.botoesCrud {
   height:80px;
   display: flex;
   justify-content: space-between;

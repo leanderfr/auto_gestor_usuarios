@@ -84,14 +84,11 @@ setTimeout(() => {
   //setItemMenuAtual('itemMenuProdutos')
 }, 5000);
 
-  // *****************************************************************************
-  // codigo que sera executado apos form login ser exibido ou ocultado
-  // *****************************************************************************
-  useEffect( () => {       
-
-    // se o form de login foi exibido, faz as configuracoes jscript necessarias
-    if (! getMostrarFormLogin.current) return
-
+// *****************************************************************************
+// codigo que sera executado apos HTML (Main.jsx) ter sido carregado
+// *****************************************************************************
+  
+const prepararFormLogin = () => {
     // prepara botao 'login' do form de login para que dispare dados do usuario para o back
     $(divLogin.current).find("button").off('click').click(function (event) {
 
@@ -147,11 +144,29 @@ setTimeout(() => {
                 // fehca form login
                 setMostrarFormLogin(false)
             }
+            // refaz jscript ativo do form registro, pois o react destroy ao atualizar a tela
+            setTimeout(() => {
+              prepararFormLogin()   
+            }, 1000);
         })
         .catch((error) => console.log('erro='+error));  
     });
 
     $('#email').focus();    
+
+
+}
+
+  // *****************************************************************************
+  // codigo que sera executado apos form login ser exibido ou ocultado
+  // *****************************************************************************
+  useEffect( () => {       
+
+    // se o form de login foi exibido, faz as configuracoes jscript necessarias
+    if (! getMostrarFormLogin.current) return
+
+    prepararFormLogin()
+
   }, [mostrarFormLogin])
 
 
@@ -420,7 +435,7 @@ setTimeout(() => {
 
               { ! mostrarFormLogin && ! mostrarFormRegistro && itemMenuAtual!='' &&
                   <div className='Datatable'>
-                    <Datatable   /> 
+                    <Datatable  setCarregando={setCarregando}  /> 
                   </div>
               }
 

@@ -20,7 +20,7 @@ class AuthController extends Controller implements HasMiddleware
   public static function middleware() 
   {
     return [
-      new Middleware('auth:sanctum')->except(['index', 'login', 'logout', 'forms', 'registrar'])
+      new Middleware('auth:sanctum')->except(['lista', 'login', 'forms', 'registrar'])
     ];
   }
 
@@ -146,8 +146,6 @@ class AuthController extends Controller implements HasMiddleware
         ->header('Content-Type', 'text/plain');
 
   }
-
-
 
 
 
