@@ -15,7 +15,7 @@ import $ from 'jquery'
 import 'jquery-ui-bundle';
 import 'jquery-ui-bundle/jquery-ui.min.css';
 
-import { preparaAnimacaoCarregando, stringEhJson, mensagemRolante  } from '../js/utils.js';
+import { preparaAnimacaoCarregando, mensagemRolante  } from '../js/utils.js';
 
 export const ContextoCompartilhado = createContext();
 
@@ -31,7 +31,7 @@ function Main() {
   let [carregando, setCarregando] = useState(true)
 
   // controla info do usuario atualmente logado (se alguem estiver logado, claro)
-  let [infoUsuarioLogado, setInfoUsuarioLogado, getInfoUsuarioLogado] = useState('')
+  let [nomeUsuarioLogado, setNomeUsuarioLogado, getNomeUsuarioLogado] = useState('')
 
   // controla se o form de login deve ser exibido, isso vai ocorrer qdo usuario nao logado
   let [mostrarFormLogin, setMostrarFormLogin, getMostrarFormLogin] = useState(false)
@@ -45,6 +45,10 @@ function Main() {
   // memoriza valor atual de cada campo no fomr de registro (novo usuario) para em caso de erro ao submter form
   let [valoresFormRegistro, setValoresFormRegistro, getValoresFormRegistro] = useState( {nome: '', email: ''} )
 
+  // memoriza token do usuario logado
+  let [tokenUsuarioLogado, setTokenUsuarioLogado, getTokenUsuarioLogado] = useState('')
+
+
   // ponteiro para a DIV do form login, para poder monitorar o botao 'submit'
   const divLogin = useRef(null); 
 
@@ -57,12 +61,13 @@ function Main() {
   useEffect( () => {      
       preparaAnimacaoCarregando()  
   
-      // verifica se ha usuario logado
-      if ( infoUsuarioLogado.current == null )    
-        setTimeout(() => {
-          fetchUsuarioLogado()    
-        }, 500);
-  }, [infoUsuarioLogado])
+      // busca HTML que vai compor o form de login e de registro (novo usuario)
+      // o ideal seria criar um componente React para esses forms, mas como objetivo aqui é mostrar
+      // que conheco Laravel, os forms serao enviados pelo Blade (backend)
+      setTimeout(() => {
+        buscarFormsUsuario()    
+      }, 500);
+  }, [])
 
 
   // *****************************************************************************
@@ -127,15 +132,15 @@ function Main() {
           // necessario fazer isso porque o html vem do backend
           // caso o form fosse montado aqui no front, nao seria necessario
           setValoresFormRegistro( { 
-            nome: $('#nome').val(),
+            nome: $('#name').val(),
             email: $('#email').val(),
           })
 
           let body = JSON.stringify( {
-              name: $('#nome').val(),
+              name: $('#name').val(),
               email: $('#email').val(),
-              password: $('#senha').val(),
-              password_confirmation: $('#senha_confirmation').val(),
+              password: $('#password').val(),
+              password_confirmation: $('#password_confirmation').val(),
           })
               
           setCarregando(true)
@@ -155,17 +160,16 @@ function Main() {
               })
               .then(res => res.json()) 
               .then(resposta => {
-
-console.log('resp1='+JSON.stringify(resposta))
-
                 // deve haver um jeito mais inteligente de exibir o erro abaixo, mas sao 01:08 da manha, vai usando IF mesmo 
                 erro = ''
                 if (typeof resposta.errors!='undefined') {
-                    if (typeof resposta.errors.nome!='undefined') erro = resposta.errors.nome;
-                    if (typeof resposta.errors.senha!='undefined') erro = resposta.errors.senha;
+                    if (typeof resposta.errors.name!='undefined') erro = resposta.errors.name;
+                    if (typeof resposta.errors.password!='undefined') erro = resposta.errors.password;
                     if (typeof resposta.errors.email!='undefined') erro = resposta.errors.email;
                 }
         
+                setCarregando(false)
+
                 if (erro!=='')  {
                   mensagemRolante(erro, 2000)
                 
@@ -173,36 +177,41 @@ console.log('resp1='+JSON.stringify(resposta))
                   // isso ocorre porque qq alteracao visual na tela (exemplo: setCarregando)
                   // o react esquece valores
                   setTimeout(() => {
-                      //$('#nome').val( getValoresFormRegistro.current.nome )
-                      //$('#email').val( getValoresFormRegistro.current.email )                 
+                      $('#name').val( getValoresFormRegistro.current.nome )
+                      $('#email').val( getValoresFormRegistro.current.email )                 
                   }, 100);
                 }  
                 else {
-                  setInfoUsuarioLogado( resposta.nome )
+                  // memoriza nome (para exibir no Header) e token do usuario recem cadastrado
+                  setNomeUsuarioLogado( resposta.usuario.name )  
+                  setTokenUsuarioLogado( resposta.token )  
+
+                  localStorage.setItem("nomeUsuarioLogado", resposta.usuario.name)
+                  localStorage.setItem("tokenUsuarioLogado", resposta.token)
                 }
+
+                // zera os campos do form registro (novo usuario), caso seja usado de novo
+                if (erro==='')
+                    setTimeout(() => {
+                        $('#name').val('')
+                        $('#email').val('')                 
+                    }, 100);
+
+                // refaz jscript ativo do form registro, pois o react destroy ao atualizar a tela
+                setTimeout(() => {
+                  prepararFormRegistro()  
+                }, 1000);
+
 
               })
               .catch((error) => console.log('erro='+error));  
-              setCarregando(false)
-
-              // zera os campos do form registro (novo usuario), caso seja usado de novo
-              if (erro==='')
-                  setTimeout(() => {
-                      $('#nome').val('')
-                      $('#email').val('')                 
-                  }, 100);
-
-              // refaz jscript ativo do form registro, pois o react destroy ao atualizar a tela
-              setTimeout(() => {
-                prepararFormRegistro()  
-              }, 1000);
             
 
           }, 100);
 
       });
 
-      $('#nome').focus();    
+      $('#name').focus();    
   }
 
   // ***************************************************************************************
@@ -225,42 +234,47 @@ console.log('resp1='+JSON.stringify(resposta))
   }
 
 
-
   // *****************************************************************************
   // busca no backend se ha usuario logado e junto com isso,
   // obtem o HTML do form de login e form de registro (novo usuario)
   // para deixar amarzenado caso precise
   // *****************************************************************************
-  const fetchUsuarioLogado = async () =>  {
-    fetch(`${backendUrl}/auth/verificar`)
+
+  const buscarFormsUsuario = async () =>  {
+    fetch(`${backendUrl}/auth/forms`, {
+      method: 'get',
+    })
     .then((response) => {
         return response.text()
     })
     .then((data) => {
 
-      if (stringEhJson(data)) {
-        console.log('usu logado')
-      }
+      // backend enviou forms usuario nessa sequencia, separados por |||:   html form login|||html form registro
+      let info = data.split('|||')   
+
+      // memoriza HTML dos forms registro/login  caso precise usa los
+      setHtmlFormLogin( info[0] )
+      setHtmlFormRegistro( info[1] ) 
+
+      // ja comeca exibindo fomr login caso usaurio nao logado
+      // guarda usuario logado no storage do navegador
+
+console.log('tk='+localStorage.getItem("tokenUsuarioLogado"))
+      if ( localStorage.getItem("tokenUsuarioLogado")==null ) setMostrarFormLogin(true)
       else {
-        // backend enviou info usuario logado (caso exista)|||html form login|||html form registro
-        let info = data.split('|||')   // separador das informacoes = |||
-
-        // memoriza HTML dos forms registro/login  caso precise usa los
-        setInfoUsuarioLogado( info[0])   // se nao ha usuario logado, a string vai vir em branco
-        setHtmlFormLogin( info[1] )
-        setHtmlFormRegistro( info[2] ) 
-
-        // ja comeca exibindo fomr login caso usaurio nao logado
-        if (getInfoUsuarioLogado.current==='') setMostrarFormLogin(true)
-         
-        setCarregando(false);  // oculta animacao 'carregando...'
+          setNomeUsuarioLogado( localStorage.getItem("nomeUsuarioLogado") )  
+          setTokenUsuarioLogado( localStorage.getItem("tokenUsuarioLogado") )  
       }
+
+        
+      setCarregando(false);  // oculta animacao 'carregando...'
     })
     .catch((error) => console.log('erro='+error));
   }
   
   return (    
     <>
+
 
     <div className="Conteudo">
 
@@ -282,7 +296,7 @@ console.log('resp1='+JSON.stringify(resposta))
                 {/* se nao ha usuario logado, carrega Header com os botoes Registrar e Login  */}
                 { ! carregando && 
                   <Header 
-                      infoUsuarioLogado={infoUsuarioLogado} 
+                      nomeUsuarioLogado={nomeUsuarioLogado} 
                       formRegistroAtivo={mostrarFormRegistro}   
                       formLoginAtivo={mostrarFormLogin}                    
                       exibirFormRegistro={exibirFormRegistro}   
@@ -309,6 +323,11 @@ console.log('resp1='+JSON.stringify(resposta))
           <div id='divCarregando' >&nbsp;</div>
         </div>
     }
+
+    <div id="msgRolanteErros" >
+      &nbsp;ddd
+    </div>
+
 
     </>
 

@@ -15,7 +15,7 @@
 
     <div style='display: flex; flex-direction: column; gap: 2px ' >
       <div>Nome:</div>
-      <input type='text' id='nome'  style='padding: 5px' autocomplete="off"  />
+      <input type='text' id='name'  style='padding: 5px' autocomplete="off"  />
     </div>
 
     <div style='display: flex; flex-direction: column; gap: 5px;padding-bottom: 20px; padding: 2px ' >
@@ -25,12 +25,12 @@
 
     <div style='display: flex; flex-direction: column; gap: 5px;padding-bottom: 20px; padding: 2px ' >
       <div>Senha:</div>
-      <input type='text' id='senha' style='padding: 5px ' autocomplete="off" />
+      <input type='password' id='password' style='padding: 5px ' autocomplete="off" />
     </div>
 
     <div style='display: flex; flex-direction: column; gap: 5px;margin-bottom: 20px; padding: 2px ' >
       <div>Confirme a Senha:</div>
-      <input type='text' id='senha_confirmation' style='padding: 5px ' autocomplete="off" />
+      <input type='password' id='password_confirmation' style='padding: 5px ' autocomplete="off" />
     </div>
 
 
@@ -39,11 +39,6 @@
         onmouseleave="this.style.border='solid 2px transparent'"         > 
       Registrar
     </button>
-
-    <!-- mensagem rolante usada para informar erros -->
-    <div  id="msgRolanteErros" >  
-      &nbsp;
-    </div>
 
 
   </div>

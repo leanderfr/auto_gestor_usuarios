@@ -1,10 +1,17 @@
 
 
+{{ 
+
+Session::put('futuro', $nome )
+
+
+ }}
+
 <div style='color:blue;font-size:30px'>
 
       <div style='color:blue;font-size:30px'>
       chave atual = {{ csrf_token() }}
-      user atual = {{ auth()->user() }}
+      user atual = {{ Session::get('teste_usuario') }}
       </div>
 
 

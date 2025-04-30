@@ -9,7 +9,7 @@ import {  ContextoCompartilhado } from './Main.jsx';
 function Header( props ) {
 
   // obtem usuario atualmente logado que foi passado por Main.jsx
-  let { infoUsuarioLogado }  = props;  
+  let { nomeUsuarioLogado }  = props;  
 
 
   // useRef => ajuda a colocar efeito HOVER nos botoes
@@ -36,7 +36,7 @@ function Header( props ) {
     <>
 
         {/* detalhes do usuario logado */}
-        <div id='infoUsuarioLogado' style={{color: 'red', fontSize: '30px'}} >aa{  infoUsuarioLogado  } </div>
+        <div id='nomeUsuarioLogado' style={{color: 'red', fontSize: '30px'}} >aa{  nomeUsuarioLogado  } </div>
 
 
         {/* botoes novo usuario, login, logout */}
@@ -53,7 +53,7 @@ function Header( props ) {
             }
 
             {/* se ja nao estiver mostrando form de login e nao houver usuario logado, oferece botao 'LOGIN' */}
-            { infoUsuarioLogado==='' && ! props.formLoginAtivo && 
+            { nomeUsuarioLogado==='' && ! props.formLoginAtivo && 
                 <button ref={btnLogin} style = {btnPadrao} 
                     onMouseEnter={ () => {btnLogin.current.style.border ='solid 2px gray'} } 
                     onMouseLeave={ () => {btnLogin.current.style.border ='solid 2px transparent'} }   
@@ -63,7 +63,7 @@ function Header( props ) {
 	          }
 
             {/* se houver usuario logado, oferece botao 'LOGOUT' */}
-            { infoUsuarioLogado!=='' && 
+            { nomeUsuarioLogado!=='' && 
                 <button ref={btnLogout} style = {btnPadrao} 
                     onMouseEnter={ () => {btnLogout.current.style.border ='solid 2px gray'} } 
                     onMouseLeave={ () => {btnLogout.current.style.border ='solid 2px transparent'} }   >

@@ -55,6 +55,7 @@ exibe mensagem rolante por alguns segundos, usado principalmente para informar e
 const mensagemRolante = (html, time) => {
 
   let divRolante = $('#msgRolanteErros')
+
   divRolante.html('&nbsp;&nbsp;&nbsp;&nbsp;' + html);
   divRolante.show("slide", { direction: "left" }, 200);
 

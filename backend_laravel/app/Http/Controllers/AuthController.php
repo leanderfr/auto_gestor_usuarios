@@ -2,120 +2,154 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
-use Illuminate\Auth\Events\Validated;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Models\User;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Gate;
 
-class AuthController extends Controller
+class AuthController extends Controller implements HasMiddleware
 {
-    
-    // ****************************************************************************************
-    // verifica se ha usuario logado e retorna seus dados
-    // alem disso, retorna o HTML do form de login e de registro  (novo usuario)
-    // para que o frontend tenha disponivel caso precise
-    // ****************************************************************************************
-    public function verificarLogado  () {
-      $detalhesUsuario = '';
-      if (Auth::check()) { 
-        $detalhesUsuario = Auth::user()->name . ';' . csrf_token() ;
+
+  // *************************************************************************************************************
+  // Middleware('auth:sanctum') define que para executar qq funcao abaixo , é necessario estar logado
+  // funcoes definidas em except, nao precisa
+  // *************************************************************************************************************
+
+  public static function middleware() 
+  {
+    return [
+      new Middleware('auth:sanctum')->except(['index', 'login', 'logout', 'forms', 'registrar'])
+    ];
+  }
+
+  // *************************************************************************************************************
+  // *************************************************************************************************************
+
+  public function registrar(Request $request) {
+      $erros = [   
+          'email.required' => 'Preencha o email',
+          'email.email' => 'Email não está em um formato correto',
+          'email.unique' => 'Email já cadastrado, use o formulário de login',
+          'email' => 'Email precisa ter entre 3 e 150 caracteres',
+          'password.min' => 'A senha precisa ter entre 3 e 50 caracteres',
+          'password.max' => 'A senha precisa ter entre 3 e 50 caracteres',
+          'password.required' => 'Preencha a senha',
+          'password.confirmed' => 'A senha não confirma',
+          'name' => 'Nome precisa ter entre 3 e 150 caracteres',
+      ];
+      $verificar =  [
+        'name' => 'required|string|max:150|min:3',
+        'email' => 'required|string|max:150|min:3',
+        'email' => 'required|email|string|unique:users|max:150', 
+        'password' => 'required|string|min:3|max:50|confirmed'
+      ];
+
+      $regOK = $request->validate($verificar, $erros);
+      $usuario = User::create($regOK);
+
+      // cria token que sera enviado pelo front a cada requisicao do usuario criado
+      $token = $usuario->createToken($request->name);
+ 
+      return [
+        'token' => $token->plainTextToken,
+        'usuario' => $usuario,
+      ]; 
+  }
+
+  // *************************************************************************************************************
+  // *************************************************************************************************************
+
+  public function login(Request $request) {
+      $erros = [   
+          'email.required' => 'Preencha o email',
+          'email.exists' => 'Não há usuário cadastrado com este email',
+          'password.required' => 'Preencha a senha',
+      ];
+      $verificar =  [
+        'email' => 'required|email|string|exists:users', 
+        'password' => 'required|string'
+      ];
+      $request->validate($verificar, $erros);
+
+      $usuario = User::where('email', $request->email)->first();
+
+      // verifica usuario existe com o email e senha ok
+      if (! $usuario || ! Hash::check($request->password, $usuario->password)) {
+        return( [
+          'erro' => 'Erro ao autenticar'
+        ]);
       }
+
+      // cria token que sera enviado pelo front a cada requisicao do usuario logado
+      $token = $usuario->createToken($usuario->name);
+ 
+      return [
+        'token' => $token->plainTextToken,
+        'usuario' => $usuario,
+      ]; 
+
+
+
+  }
+
+  // *************************************************************************************************************
+  // *************************************************************************************************************
+
+  public function logout(Request $request) {    
+    $request->user()->tokens()->delete();
+
+    return( [
+          'erro' => 'Você foi deslogado'
+        ]);  
+  }
+
+  // *************************************************************************************************************
+  // administrador estara alterando usuario, nao exige senha nesse momento
+  // *************************************************************************************************************
+  public function update(Request $request, User $user) {    
+
+      // regra para que somente administrator altere usuario
+      Gate::authorize('alterarUsuario', $user);
+      $erros = [   
+          'email.required' => 'Preencha o email',
+          'email.email' => 'Email não está em um formato correto',
+          'email.unique' => 'Email já cadastrado, use o formulário de login',
+          'email' => 'Email precisa ter entre 3 e 150 caracteres',
+      ];
+      $verificar =  [
+        'email' => 'required|string|max:150|min:3',
+        'email' => 'required|email|string|unique:users|max:150', 
+        'password' => 'required|string|min:3|max:50|confirmed'
+      ];
+
+
+      return( [
+          'erro' => 'Você foi deslogado'
+        ]);
+  }
+
+  // *************************************************************************************************************
+  // obtem html dos forms de login e registro (novo usuario)  
+  // fazendo isso para provar que conheco Blade, o certo seria ter estes forms no front
+  // *************************************************************************************************************
+
+  public function forms(Request $request) {    
 
       // concatena HTML dos forms login e registro (novo usuario)
       $htmlFormLogin = view('auth.form_login')->render();
       $htmlFormRegistro = view('auth.form_novo_usuario')->render();
 
       // quem separa as informacoes é a string '|||'
-      return response($detalhesUsuario . '|||'. $htmlFormLogin . '|||' . $htmlFormRegistro, 200)
+      return response("$htmlFormLogin|||$htmlFormRegistro", 200)
         ->header('Content-Type', 'text/plain');
 
-    }
-
-
-    // ****************************************************************************************
-    // tenta login baseado no email e senha recebidos do front
-    // ****************************************************************************************
-    public function tentarLogin ()  {
-        return view('auth.teste');
-    }
+  }
 
 
 
-    // ****************************************************************************************
-    // verifica se informacao enviada pelo front ok e caso positivo, registra novo usuario
-    // ****************************************************************************************
-    public function novoUsuario  (Request $request) {
 
-      $erros = [
-          'email.required' => 'Preencha o email',
-          'email.email' => 'Email não está em um formato correto',
-          'email.unique' => 'Email já cadastrado, use o formulário de login',
-          'name' => 'Nome precisa ter entre 3 e 150 caracteres',
-          'password.min' => 'A senha precisa ter entre 3 e 50 caracteres',
-          'password.max' => 'A senha precisa ter entre 3 e 50 caracteres',
-          'password.required' => 'Preencha a senha',
-          'password.confirmed' => 'A senha não confirma',
-      ];
-      $verificar =  [
-        'name' => 'required|string|max:150|min:3',
-        'email' => 'required|email|string|unique:users|max:150', 
-        'password' => 'required|string|min:3|max:50|confirmed'
-      ];
-
-      //$regUsuarioTestado = $request->validate($verificar, $erros);
-      $regUsuarioTestado = $request->validate($verificar);
-
-      $novoUsuario = User::create( $regUsuarioTestado );
-
-      Auth::login( $novoUsuario );
-      Auth::login( $novoUsuario );
-      Auth::login( $novoUsuario );
-      Auth::login( $novoUsuario );
-
-
-//      $detalhesUsuarioRecemLogado = Auth::user()->name . ';' . csrf_token() ;
-      $resOK = array('nome'=>Auth::user()->name, 'token'=>csrf_token(), 'novo'=>$novoUsuario);
-      return response(json_encode($resOK), 200) ;
-    }
-
-
-    public function showRegister() {
-      return view('auth.register');
-    }
-
-    public function showLogin() {
-      return view('auth.login');
-    }
-
-    public function teste() {
-      return view('auth.teste');
-    }
-
-
-    public function register(Request $request) {
-
-//dd('ljkdsljkdsljk');
-
-      $validated = $request->validate( [
-        'name' => 'required|string',
-        'email' => 'required|email',
-        'password' => 'required|string'
-      ]);
-      
-     
-       $user = User::create($validated);
-        Auth::login($user);
-
-
-      return view('auth.teste');
-    }
-
-    public function verifica(Request $request) {
-      if (Auth::check()) 
-        dd('logado!!!');
-      else 
-        dd('NAO logado!!!');
-    }
 
 
 }
