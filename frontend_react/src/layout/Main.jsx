@@ -33,6 +33,7 @@ function Main() {
   // controla detalhes do usuario logado
   let [infoUsuarioLogado, setInfoUsuarioLogado, getInfoUsuarioLogado] = useState( 
     {
+      id: '',
       nome: '',
       token: '',
       administrador: '',
@@ -130,6 +131,7 @@ const prepararFormLogin = () => {
                 // memoriza detalhes do usuario recem logado
                 // temporariamente, para o React
                 setInfoUsuarioLogado( { 
+                  id: resposta.usuario.id,
                   nome:  resposta.usuario.name,
                   token:  resposta.token,
                   administrador:  resposta.usuario.administrador,
@@ -259,6 +261,7 @@ const prepararFormLogin = () => {
                   // memoriza detalhes do usuario recem logado
                   // temporariamente, para o React
                   setInfoUsuarioLogado( { 
+                    id: resposta.usuario.id,
                     nome:  resposta.usuario.name,
                     token:  resposta.token,
                     administrador:  resposta.usuario.administrador,
@@ -341,6 +344,7 @@ const prepararFormLogin = () => {
 
         setItemMenuAtual('')
         setInfoUsuarioLogado( { 
+          id: '',
           nome:  '',
           token:  '',
           administrador:  '',
@@ -435,7 +439,7 @@ const prepararFormLogin = () => {
 
               { ! mostrarFormLogin && ! mostrarFormRegistro && itemMenuAtual!='' &&
                   <div className='Datatable'>
-                    <Datatable  setCarregando={setCarregando}  /> 
+                    <Datatable  setCarregando={setCarregando} getInfoUsuarioLogado={getInfoUsuarioLogado} /> 
                   </div>
               }
 

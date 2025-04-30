@@ -18,11 +18,81 @@ function UsuarioForm( props )    {
     // obtem detalhes sobre qual registro editar
     const {operacao, registroId, tabela} = props;
 
+    //********************************************************************************************
+    //********************************************************************************************
     const ajuda = () => {
       mensagemRolante('Algum texto informativo aqui...', 2000)
     }
 
+    //********************************************************************************************
+    //********************************************************************************************
+    const salvarUsuario = async () => {
+        props.setCarregando(true)
+
+        fetch(`${backendUrl}/usuarios/${registroId}`, { 
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify( {name: $('#txtNome').val()} )  
+        })
+        .then((response) => response.json())
+        .then((resposta) => {
+          props.setCarregando(false)
+
+          // deve haver um jeito mais inteligente de exibir o erro abaixo, mas sao 01:08 da manha, vai usando IF mesmo 
+          let erro = ''
+          if (typeof resposta.errors!='undefined') {
+              if (typeof resposta.errors.name!='undefined') erro = resposta.errors.name;
+          }
+
+          if (erro!=='')  {
+            mensagemRolante(erro, 3000)          
+          }  
+          else {
+            props.fecharFormCrud()
+            props.setRegistros(null)  // força reload da datatable
+          }
+ 
+        })
+        .catch((error) => console.log('erro='+error))
+    }
+
+
+    //********************************************************************************************
+    //********************************************************************************************
+    const excluirUsuario = async () => {
+
+        if (props.getInfoUsuarioLogado.current.id == registroId)  {
+          mensagemRolante("Você não pode excluir o usuário atualmente logado", 3000)          
+          return;
+        }
+
+        props.setCarregando(true)
+
+        fetch(`${backendUrl}/usuarios/${registroId}`, { 
+          method: 'DELETE',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+        })
+        .then((response) => response.text())
+        .then((resposta) => {
+          props.setCarregando(false)
+
+          props.fecharFormCrud()
+          props.setRegistros(null)  // força reload da datatable
+        })
+        .catch((error) => console.log('erro='+error))
+
+    }
+
+
+    //********************************************************************************************
     // carrega html do formulario
+    //********************************************************************************************
     const fetchUsuario = async () =>  {
         // monta formulario
         fetch(`${backendUrl}/usuarios/${registroId}`, { method: "GET" })
@@ -42,6 +112,8 @@ function UsuarioForm( props )    {
         .catch((error) => console.log('erro='+error));
     }
 
+    //********************************************************************************************
+    //********************************************************************************************
     useEffect( () => {
         preparaAnimacaoCarregando()
 
@@ -55,7 +127,9 @@ function UsuarioForm( props )    {
           }, 500);
     }, [] )
 
+    //********************************************************************************************
     // fecha form de Crud
+    //********************************************************************************************
     const fecharFormCrud = event => {
       // so fecha se clicou no backdrop
       if (event.target === event.currentTarget) props.fecharFormCrud()
@@ -105,7 +179,7 @@ function UsuarioForm( props )    {
                         <div style={{paddingTop:'3px'}} >Nome:</div>  
                         <div class='flex grow'>
                           { operacao=='delete' &&
-                            <span class='span_formFieldValue' id='txtName'>&nbsp;</span> }
+                            <span class='span_formFieldValue' id='txtNome'>{ usuario.name }</span> }
                           { operacao!='delete' && 
                             <input 
                                 type="text" 
@@ -130,10 +204,10 @@ function UsuarioForm( props )    {
                 <button  id="btnCLOSE" class="btnCANCEL" onClick={props.fecharFormCrud} >Cancelar</button>
 
                 { operacao=='delete' && 
-                  <button  id="btnDELETE" class="btnDELETE" onClick={()=>{}} aria-hidden="true">Excluir</button> }
+                  <button  id="btnDELETE" class="btnDELETE" onClick={()=>{excluirUsuario()}} aria-hidden="true">Excluir</button> }
 
                 { operacao!=='delete' && 
-                  <button  id="btnSAVE" class="btnSAVE" onClick={()=>{}} aria-hidden="true">Salvar</button> }
+                  <button  id="btnSAVE" class="btnSAVE" onClick={()=>{salvarUsuario()}} aria-hidden="true">Salvar</button> }
 
               </div>
 

@@ -591,11 +591,6 @@ video {
   position: relative;
 }
 
-.mx-6 {
-  margin-left: 1.5rem;
-  margin-right: 1.5rem;
-}
-
 .mr-2 {
   margin-right: 0.5rem;
 }
@@ -674,11 +669,6 @@ video {
   background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1));
 }
 
-.px-4 {
-  padding-left: 1rem;
-  padding-right: 1rem;
-}
-
 .px-6 {
   padding-left: 1.5rem;
   padding-right: 1.5rem;
@@ -689,50 +679,20 @@ video {
   padding-bottom: 0.5rem;
 }
 
-.py-8 {
-  padding-top: 2rem;
-  padding-bottom: 2rem;
-}
-
-.px-8 {
-  padding-left: 2rem;
-  padding-right: 2rem;
-}
-
-.pt-8 {
-  padding-top: 2rem;
-}
-
-.pt-14 {
-  padding-top: 3.5rem;
-}
-
 .pb-14 {
   padding-bottom: 3.5rem;
-}
-
-.pl-8 {
-  padding-left: 2rem;
-}
-
-.pr-6 {
-  padding-right: 1.5rem;
 }
 
 .pl-6 {
   padding-left: 1.5rem;
 }
 
-.pr-8 {
-  padding-right: 2rem;
-}
-
-.pr-10 {
-  padding-right: 2.5rem;
-}
-
 .pr-12 {
   padding-right: 3rem;
+}
+
+.pt-8 {
+  padding-top: 2rem;
 }
 
 .shadow {
@@ -1150,6 +1110,13 @@ input:checked + .slider_language:before {
   flex:1;
 }
 
+.actionIconNull {
+  border: solid 1px transparent;
+  display: flex;
+  height:100%;
+  flex:1;
+}
+
 .actionIcon:hover {
   border: solid 1px navy;
 }
@@ -1280,7 +1247,8 @@ input[type="text"].text_formFieldValue:focus {
 .span_formFieldValue {
   font-size: 1.1em;
   cursor: pointer;
-  margin-top:10px;
+  margin-top:2px;
+  margin-left:10px;
   color: black;
   font-weight: bold;
   line-height: 25px;

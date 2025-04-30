@@ -35,6 +35,18 @@ Route::group(['prefix'=>'usuarios'], function() {
 
   // obtem registro de usuario
   Route::get('/{id}', [UsuariosController::class, 'exibir']);
+
+  // edita usuario existente
+  Route::post('/{id}', [UsuariosController::class, 'editar']);
+
+  // excliui usuario existente
+  Route::delete('/{id}', [UsuariosController::class, 'excluir']);
+
+  // alterna status do usuario
+  Route::post('/status/{id}', [UsuariosController::class, 'status']);
+
+
+
 });
 
 

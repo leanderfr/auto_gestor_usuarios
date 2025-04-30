@@ -3,6 +3,7 @@ import '../css/index.css';
 import {  ContextoCompartilhado, backendUrl } from './Main.jsx';
 import {  useContext, useEffect, Fragment } from 'react';
 import UsuarioForm from './UsuarioForm.jsx'
+import { mensagemRolante  } from '../js/utils.js';
 
 // useState de 'Aminadav Glickshtein' permite 3o parametro para obter estado atual da variavel
 // fazer isso com useState padrao do react é muito complicado
@@ -16,8 +17,7 @@ function Datatable( props ) {
   // colunas que serao exibidias dependendo da tabela sendo vista (_currentMenuItem)
   let columns = []
 
-  // manipulando tabela de desenvolvedores 
-  //if (getCurrentTable.current === 'itemMenuDevelopers')
+  // manipulando tabela de usuarios
   if (itemMenuAtual === 'itemMenuUsuarios')  
     columns.push({ fieldname: "id", width: "20%", title: 'Id', id: 1 },
                 { fieldname: "name", width: "calc(80% - 150px)", title: 'Nome', id: 2} )
@@ -34,7 +34,9 @@ function Datatable( props ) {
   let [idRegistroCrud, setIdRegistroCrud, getIdRegistroCrud] = useState('')
 
 
+  //********************************************************************************************  
   // le registros da tabela atual
+  //********************************************************************************************
   const fetchRegistros = async () =>  {
     props.setCarregando(true)
 
@@ -65,6 +67,8 @@ function Datatable( props ) {
     .catch((error) => console.log('erro='+error));
   }
 
+  //********************************************************************************************
+  //********************************************************************************************
   useEffect( () => {
       // carrega registros da tabela atual 
       // força 1/2 segundo de parada para que usuario perceba que esta recarregando
@@ -76,17 +80,53 @@ function Datatable( props ) {
 
   }, [registros])
 
+  //********************************************************************************************
   // chama form para CRUD de alguma tabela 
+  //********************************************************************************************
   const Crud = ( operacao, registroId ) => {
     setOperacaoCrud( operacao )
     setIdRegistroCrud( registroId )
     setFormCrudChamado(true)
   }
 
+  //********************************************************************************************
   // fecha form de Crud
+  //********************************************************************************************
   const fecharFormCrud = event => {
     setFormCrudChamado(false)
   }
+
+
+  //********************************************************************************************
+  // muda status do usuario , ativo / inativo
+  //********************************************************************************************
+  const statusUsuario = async (registroId) => {
+
+      if (props.getInfoUsuarioLogado.current.id == registroId)  {
+        mensagemRolante("Você não pode alterar status do usuário atualmente logado", 3000)          
+        return;
+      }
+
+      props.setCarregando(true)
+
+      fetch(`${backendUrl}/usuarios/status/${registroId}`, { 
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+      })
+      .then((response) => response.json())
+      .then((resposta) => {
+        props.setCarregando(false)
+        setTimeout(() => {
+          setRegistros(null)  // força reload da datatable   
+        }, 500);
+        
+      })
+      .catch((error) => console.log('erro='+error))
+  }
+
 
   return (
     <>
@@ -133,14 +173,28 @@ function Datatable( props ) {
                       <Fragment key={`frag${registro.id}${col.id}`} >
                           {/* exibe ultima, acoes (1a condicao abaixo) ou outras colunas (2a condicao abaixo) */}
                           {j===length-1 ? (
-                                <div  className='actionColumn' style= {{ width: col.width}}  >
-                                    <div className='actionIcon' onClick={ () => Crud('patch', registro.id) } ><img alt='' src='images/edit.svg' /></div>
-                                    <div className='actionIcon' onClick={ () => Crud('delete', registro.id) }><img alt='' src='images/delete.svg' /></div>
-                                    <div className='actionIcon' onClick={ () => Crud('status', registro.id) }><img alt='' src='images/activate.svg' /></div>
-                                </div>  ) : 
-
+                            <>
+                              {registro.ativo ? (
+                                <>
+                                    <div  className='actionColumn' style= {{ width: col.width}}  >
+                                        <div className='actionIcon' onClick={ () => Crud('patch', registro.id) } ><img alt='' src='images/edit.svg' /></div>
+                                        <div className='actionIcon' onClick={ () => Crud('delete', registro.id) }><img alt='' src='images/delete.svg' /></div>
+                                        <div className='actionIcon' onClick={ () => statusUsuario(registro.id) }><img alt='' src='images/activate.svg' /></div>
+                                    </div>   
+                                </> 
+                              ) :  (
+                                  <div  className='actionColumn' style= {{ width: col.width}}  >
+                                      <div className='actionIconNull'>&nbsp;</div>
+                                      <div className='actionIconNull'>&nbsp;</div>
+                                      <div className='actionIcon' onClick={ () => statusUsuario(registro.id) }><img alt='' src='images/activate.svg' /></div>
+                                  </div>  ) 
+                              }
+                            </> ) : (
                               (<div style={{width: col.width, paddingLeft: '5px'}}> {registro[col.fieldname]}  </div>) 
+                            )
                           }
+
+
                       </Fragment>
                     )
                 })}
@@ -155,6 +209,8 @@ function Datatable( props ) {
                 operacao={getOperacaoCrud.current} 
                 registroId={getIdRegistroCrud.current}
                 fecharFormCrud = {fecharFormCrud}
+                setRegistros   = {setRegistros}
+                getInfoUsuarioLogado = {props.getInfoUsuarioLogado}
                 setCarregando={props.setCarregando} 
             />
     }
