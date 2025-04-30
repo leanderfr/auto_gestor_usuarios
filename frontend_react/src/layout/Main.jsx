@@ -12,7 +12,7 @@ import MenuLateral from './MenuLateral.jsx';
 
 import $ from 'jquery'
 
-import 'jquery-ui-bundle';
+import 'jquery-ui-bundle'; 
 import 'jquery-ui-bundle/jquery-ui.min.css';
 
 import { preparaAnimacaoCarregando, mensagemRolante  } from '../js/utils.js';
@@ -20,7 +20,7 @@ import { preparaAnimacaoCarregando, mensagemRolante  } from '../js/utils.js';
 export const ContextoCompartilhado = createContext();
 
 //export const backendUrl = 'http://ec2-54-94-203-105.sa-east-1.compute.amazonaws.com:8071'
-export const backendUrl = 'http://localhost:8001'
+export const backendUrl = 'http://ec2-54-94-203-105.sa-east-1.compute.amazonaws.com:8001'
 
 function Main() {
 
