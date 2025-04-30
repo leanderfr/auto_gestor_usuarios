@@ -43,7 +43,7 @@ Route::group(['prefix'=>'usuarios'], function() {
   Route::delete('/{id}', [UsuariosController::class, 'excluir']);
 
   // alterna status do usuario
-  Route::post('/status/{id}', [UsuariosController::class, 'status']);
+  Route::patch('/status/{id}', [UsuariosController::class, 'status']);
 
 
 

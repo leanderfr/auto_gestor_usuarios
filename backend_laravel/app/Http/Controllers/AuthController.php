@@ -39,14 +39,15 @@ class AuthController extends Controller implements HasMiddleware
           'password.confirmed' => 'A senha não confirma',
           'name' => 'Nome precisa ter entre 3 e 150 caracteres',
       ];
-      $verificar =  [
+      $camposGravar =  [
         'name' => 'required|string|max:150|min:3',
         'email' => 'required|string|max:150|min:3',
         'email' => 'required|email|string|unique:users|max:150', 
-        'password' => 'required|string|min:3|max:50|confirmed'
+        'password' => 'required|string|min:3|max:50|confirmed',
+        'ativo' => '',
       ];
 
-      $regOK = $request->validate($verificar, $erros);
+      $regOK = $request->validate($camposGravar, $erros);
       $usuario = User::create($regOK);
 
       // cria token que sera enviado pelo front a cada requisicao do usuario criado
@@ -68,11 +69,11 @@ class AuthController extends Controller implements HasMiddleware
           'email.exists' => 'Não há usuário cadastrado com este email',
           'password.required' => 'Preencha a senha',
       ];
-      $verificar =  [
+      $camposGravar =  [
         'email' => 'required|email|string|exists:users', 
         'password' => 'required|string'
       ];
-      $request->validate($verificar, $erros);
+      $request->validate($camposGravar, $erros);
 
       $usuario = User::where('email', $request->email)->first();
 
@@ -91,9 +92,6 @@ class AuthController extends Controller implements HasMiddleware
         'token' => $token->plainTextToken,
         'usuario' => $usuario,
       ]; 
-
-
-
   }
 
   // *************************************************************************************************************
@@ -105,37 +103,13 @@ class AuthController extends Controller implements HasMiddleware
     return( 'Você foi deslogado com sucesso!' );  
   }
 
-  // *************************************************************************************************************
-  // administrador estara alterando usuario, nao exige senha nesse momento
-  // *************************************************************************************************************
-  public function update(Request $request, User $user) {    
-
-      // regra para que somente administrator altere usuario
-      Gate::authorize('alterarUsuario', $user);
-      $erros = [   
-          'email.required' => 'Preencha o email',
-          'email.email' => 'Email não está em um formato correto',
-          'email.unique' => 'Email já cadastrado, use o formulário de login',
-          'email' => 'Email precisa ter entre 3 e 150 caracteres',
-      ];
-      $verificar =  [
-        'email' => 'required|string|max:150|min:3',
-        'email' => 'required|email|string|unique:users|max:150', 
-        'password' => 'required|string|min:3|max:50|confirmed'
-      ];
-
-
-      return( [
-          'erro' => 'Você foi deslogado'
-        ]);
-  }
 
   // *************************************************************************************************************
   // obtem html dos forms de login e registro (novo usuario)  
   // fazendo isso para provar que conheco Blade, o certo seria ter estes forms no front
   // *************************************************************************************************************
 
-  public function forms(Request $request) {    
+  public function forms(Request $request)  {    
 
       // concatena HTML dos forms login e registro (novo usuario)
       $htmlFormLogin = view('auth.form_login')->render();

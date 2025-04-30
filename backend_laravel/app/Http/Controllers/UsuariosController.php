@@ -29,11 +29,15 @@ class UsuariosController extends Controller
       $erros = [   
           'name' => 'Nome precisa ter entre 3 e 150 caracteres',
       ];
-      $verificar =  [
+      $camposGravar =  [
         'name' => 'required|string|max:150|min:3',
+        'administrador' => '',
+        'gestao_produtos' => '',
+        'gestao_categorias' => '',
+        'gestao_marcas' => '',
       ];
 
-      $regOK = $request->validate($verificar, $erros);
+      $regOK = $request->validate($camposGravar, $erros);
       $gravouOk = User::where('id', $request->route('id'))->update($regOK);
 
       return $gravouOk;
@@ -53,7 +57,11 @@ class UsuariosController extends Controller
   // *************************************************************************************************************
   public function status(Request $request) {
 
-      $statusMudou = User::where('id', $request->route('id'))->update( ['ativo' => DB::raw('! ativo')] );
+      //$status = User::where('id', $request->route('id'))->delete();
+
+//      $statusMudou = User::where('id', $request->route('id'))->update( ['ativo' => DB::raw('! ativo')] );
+
+      $statusMudou = DB::statement('UPDATE users SET ativo = ! ifnull(ativo, 0) WHERE id = '.$request->route('id'));
 
       return $statusMudou;
   }

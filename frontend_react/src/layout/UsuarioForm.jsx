@@ -8,7 +8,7 @@ import $ from 'jquery'
 // fazer isso com useState padrao do react é muito complicado
 import useState from 'react-usestateref'
 
-import { preparaAnimacaoCarregando, mensagemRolante  } from '../js/utils.js';
+import { mensagemRolante  } from '../js/utils.js';
 
 function UsuarioForm( props )    {
     
@@ -16,7 +16,7 @@ function UsuarioForm( props )    {
     let [usuario, setUsuario, getUsuario] = useState(null)
 
     // obtem detalhes sobre qual registro editar
-    const {operacao, registroId, tabela} = props;
+    const {operacao, registroId} = props;
 
     //********************************************************************************************
     //********************************************************************************************
@@ -27,6 +27,12 @@ function UsuarioForm( props )    {
     //********************************************************************************************
     //********************************************************************************************
     const salvarUsuario = async () => {
+
+        if (props.getInfoUsuarioLogado.current.id == registroId)  {
+          mensagemRolante("Você não pode alterar o usuário atualmente logado", 3000)          
+          return;
+        }
+
         props.setCarregando(true)
 
         fetch(`${backendUrl}/usuarios/${registroId}`, { 
@@ -35,7 +41,13 @@ function UsuarioForm( props )    {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify( {name: $('#txtNome').val()} )  
+          body: JSON.stringify( {
+            name: $('#txtNome').val(),
+            administrador: $("#chkAdministrador").is(':checked'),
+            gestao_produtos: $("#chkProdutos").is(':checked'),
+            gestao_marcas: $("#chkMarcas").is(':checked'),
+            gestao_categorias: $("#chkCategorias").is(':checked'),
+          } )  
         })
         .then((response) => response.json())
         .then((resposta) => {
@@ -115,16 +127,34 @@ function UsuarioForm( props )    {
     //********************************************************************************************
     //********************************************************************************************
     useEffect( () => {
-        preparaAnimacaoCarregando()
 
-        // carrega dados do usuario atual
-        // força 1/2 segundo de parada para que usuario perceba que esta recarregando
-        if ( getUsuario.current == null )    
-          props.setCarregando(true)
+        // form foi chamado para delete, status ou edit
+        if (operacao!=='post')  {
+            // carrega dados do usuario atual
+            // força 1/2 segundo de parada para que usuario perceba que esta recarregando
+            if ( getUsuario.current == null )    
+              props.setCarregando(true)
 
-          setTimeout(() => {
-            fetchUsuario()    
-          }, 500);
+              setTimeout(() => {  
+                fetchUsuario()    
+              }, 500);
+        }
+
+        // form foi chamado para novo registro (post)
+        if (operacao==='post')  {
+            setUsuario({})
+            setTimeout(() => {
+              props.setCarregando(false)
+            }, 500);
+            setTimeout(() => {
+              $('#txtNome').focus()
+            }, 10);
+
+        }
+
+              
+
+
     }, [] )
 
     //********************************************************************************************
@@ -170,7 +200,7 @@ function UsuarioForm( props )    {
               </div>
 
               {/* campos  do formulario */}
-              <div class="flex flex-col w-full h-auto pr-12 pl-6 pt-8 pb-14" >
+              <div class="flex flex-col w-full h-auto pr-12 pl-6 pt-8 pb-8" >
 
                 <div class="flex flex-row w-full gap-5">
 
@@ -196,6 +226,46 @@ function UsuarioForm( props )    {
                   </div>
 
                 </div>
+
+                <div style = {{  display: 'flex', flexDirection: 'column', gap: '20px' , marginTop: '40px',  width: '100%' }}>
+
+                    <div style = {{  display: 'flex', flexDirection: 'row', gap: '30px', width: '100%' }}>
+                        <span style={{  paddingTop: '7px', width: '200px' }}>Gestão de Produtos</span>
+                        <label for="chkProdutos" class="switch_language"  >
+                          <input id="chkProdutos" type="checkbox" defaultChecked= { usuario.gestao_produtos==1 ? true : false } />
+                          <span class="slider_language round"></span>
+                        </label>
+                    </div>
+
+                    <div style = {{  display: 'flex', flexDirection: 'row',  gap: '30px', width: '100%' }}>
+                        <span style={{  paddingTop: '7px', width: '200px' }}>Gestão de Marcas</span>
+                        <label for="chkMarcas" class="switch_language"  >
+                          <input id="chkMarcas" type="checkbox"  defaultChecked= { usuario.gestao_marcas==1 ? true : false } />
+                          <span class="slider_language round"></span>
+                        </label>
+                    </div>
+
+                    <div style = {{  display: 'flex', flexDirection: 'row',  gap: '30px', width: '100%' }}>
+                        <span style={{  paddingTop: '7px', width: '200px' }}>Gestão de Categorias</span>
+                        <label for="chkCategorias" class="switch_language"  >
+                          <input id="chkCategorias" type="checkbox" defaultChecked= { usuario.gestao_categorias==1 ? true : false }  />
+                          <span class="slider_language round"></span>
+                        </label>
+                    </div>
+
+                    <hr />
+                    <div style = {{  display: 'flex', flexDirection: 'row',  gap: '30px', width: '100%' }}>
+                        <span style={{  paddingTop: '7px', width: '200px' }}>Administrador</span>
+                        <label for="chkAdministrador" class="switch_language"  >
+                          <input id="chkAdministrador" type="checkbox" defaultChecked= { usuario.administrador==1 ? true : false }  />
+                          <span class="slider_language round"></span>
+                        </label>
+                    </div>
+
+
+              </div>
+
+
 
               </div>
 

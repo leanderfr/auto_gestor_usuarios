@@ -18,9 +18,19 @@ function Datatable( props ) {
   let columns = []
 
   // manipulando tabela de usuarios
-  if (itemMenuAtual === 'itemMenuUsuarios')  
-    columns.push({ fieldname: "id", width: "20%", title: 'Id', id: 1 },
-                { fieldname: "name", width: "calc(80% - 150px)", title: 'Nome', id: 2} )
+  let titulo = ''
+  if (itemMenuAtual === 'itemMenuUsuarios')  {
+    columns.push({ fieldname: "id", width: "5%", title: 'Id', id: 1, boolean: false },
+                { fieldname: "name", width: "calc(35% - 150px)", title: 'Nome', id: 2, boolean: false} ,
+                { fieldname: "administrador", width: "15%", title: 'Administrador', id: 3, boolean: true} ,
+                { fieldname: "gestao_produtos", width: "15%", title: 'Produtos', id: 4, boolean: true} ,
+                { fieldname: "gestao_marcas", width: "15%", title: 'Marcas', id: 5, boolean: true} ,
+                { fieldname: "gestao_categorias", width: "15%", title: 'Categorias', id: 6, boolean: true} 
+    )
+
+
+    titulo = 'Usuários'
+  }
 
   // ultima coluna, acoes (editar, excluir, etc)
   columns.push( {name: 'actions', width: '150px', title: '', id: 3} )
@@ -110,7 +120,7 @@ function Datatable( props ) {
       props.setCarregando(true)
 
       fetch(`${backendUrl}/usuarios/status/${registroId}`, { 
-        method: 'POST',
+        method: 'PATCH',
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
@@ -130,30 +140,14 @@ function Datatable( props ) {
 
   return (
     <>
-    <div className="botoesCrud">
-
-        {/* botao= pesquisar nome */}
-        <div className="CrudButton" style={{ _paddingRight:'20px' }} >
-          <div style={{width: '200px', height: '100%' }}>
-              { itemMenuAtual !=null && <input type='text' className='searchBox' placeholder='Pesquisar nome' /> }
-          </div>
-          <div className='magnifyingSearch'  >
-              <img src='images/magnifying.svg' alt='' style={{ width:'20px' }}></img>
-          </div>
-        </div>
-
-        {/* botao= novo registro */}
-        <div className="CrudButton" style={{ paddingLeft:'20px', paddingRight:'20px', gap: '15px' }}    >
-          <div><img src='images/add.svg' alt='' style={{ width:'22px' }}></img></div>
-          <div><span>{ itemMenuAtual!=null && 'Novo Registro' }</span> </div>
-        </div>
+    <div style = {{  height: '30px', fontSize: '25px', marginBottom: '30px' }}>
+      { titulo }
     </div>
-
 
     {/* looping para exibir cada coluna baseado na tabela atual */}
     <div className="DatatableHeader">
         {columns.map(function (column)  {     
-          return( <div key={column.id} style={{width: column.width }}>{column.title}  </div> );                 
+          return( <div key={column.id} style={{width: column.width, fontSize: '15px' }}>{column.title}  </div> );                 
         })}
     </div>          
 
@@ -190,7 +184,21 @@ function Datatable( props ) {
                                   </div>  ) 
                               }
                             </> ) : (
-                              (<div style={{width: col.width, paddingLeft: '5px'}}> {registro[col.fieldname]}  </div>) 
+                                <>
+
+                                    {col.boolean && registro[col.fieldname]==1 &&                   
+                                      <div style={{width: col.width, paddingLeft: '5px'}}>Sim</div>
+                                    }
+
+                                    {col.boolean && registro[col.fieldname]==0 &&                   
+                                      <div style={{width: col.width, paddingLeft: '5px'}}>-</div>
+                                    } 
+
+                                    {! col.boolean && 
+                                      <div style={{width: col.width, paddingLeft: '5px'}}>{ registro[col.fieldname] }</div>
+                                    } 
+
+                                </>
                             )
                           }
 

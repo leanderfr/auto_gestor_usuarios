@@ -215,6 +215,7 @@ const prepararFormLogin = () => {
               email: $('#email').val(),
               password: $('#password').val(),
               password_confirmation: $('#password_confirmation').val(),
+              ativo: 1,
           })
               
           setCarregando(true)

@@ -24,6 +24,10 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'ativo',
+        'gestao_produtos',
+        'gestao_marcas',
+        'gestao_categorias',
     ];
 
     /**
