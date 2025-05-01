@@ -26,18 +26,23 @@ function MenuLateral( props ) {
 
       {/* opcoes que so administrador tem */}
       { props.infoUsuarioLogado.administrador==1 && 
-         <ItemMenu itemMenuAtual={itemMenuAtual} id='itemMenuUsuarios' text='Usuários' setItemMenuAtual ={props.setItemMenuAtual}  /> 
-      } 
+         <ItemMenu 
+              itemMenuAtual={itemMenuAtual} 
+              id='itemMenuUsuarios' text='Usuários' 
+              setItemMenuAtual ={props.setItemMenuAtual}       /> }
 
       {/* opcoes de usuario comum e suas permissoes */}
-      { ! props.infoUsuarioLogado.administrador && props.infoUsuarioLogado.gestao_produtos &&   
-          <ItemMenu itemMenuAtual={itemMenuAtual}  id='itemMenuProdutos' text='Produtos'  setItemMenuAtual ={props.setItemMenuAtual} /> }
+      { props.infoUsuarioLogado.administrador==0 && props.infoUsuarioLogado.gestao_produtos==1 &&   
+          <ItemMenu itemMenuAtual={itemMenuAtual}  id='itemMenuProdutos' text='Produtos'  
+              setItemMenuAtual ={props.setItemMenuAtual}      /> }
 
-      { ! props.infoUsuarioLogado.administrador && props.infoUsuarioLogado.gestao_categorias && 
-          <ItemMenu itemMenuAtual={itemMenuAtual}  id='itemMenuCategorias' text='Categorias' setItemMenuAtual ={props.setItemMenuAtual} /> }
+      { props.infoUsuarioLogado.administrador==0 && props.infoUsuarioLogado.gestao_categorias==1 && 
+          <ItemMenu itemMenuAtual={itemMenuAtual}  id='itemMenuCategorias' text='Categorias' 
+            setItemMenuAtual ={props.setItemMenuAtual}      /> }
 
-      { ! props.infoUsuarioLogado.administrador && props.infoUsuarioLogado.gestao_marcas && 
-          <ItemMenu itemMenuAtual={itemMenuAtual}  id='itemMenuMarcas' text='Marcas' setItemMenuAtual ={props.setItemMenuAtual} /> }
+      { props.infoUsuarioLogado.administrador==0 && props.infoUsuarioLogado.gestao_marcas==1 && 
+          <ItemMenu itemMenuAtual={itemMenuAtual}  id='itemMenuMarcas' text='Marcas' 
+              setItemMenuAtual ={props.setItemMenuAtual}       /> }
 
     </>        
   );

@@ -2,13 +2,19 @@
 
 import '../css/index.css';
 
-function ItemMenu( {setItemMenuAtual, itemMenuAtual, text, id} ) {
+function ItemMenu( props ) {
+
+  const itemMenuAcionado = (id) => {
+    props.setItemMenuAtual(id)
+  }
+
+
   return (
     <div 
-        className={ itemMenuAtual===id ? 'ItemMenuClicado' : 'ItemMenu'  }
-        onClick={() => {setItemMenuAtual(id) }}
+        className={ props.itemMenuAtual===props.id ? 'ItemMenuClicado' : 'ItemMenu'  }
+        onClick={() => {itemMenuAcionado(props.id) }}
       >
-      {text}
+      {props.text}
     </div>
   );
 }

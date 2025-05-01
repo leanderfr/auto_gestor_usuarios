@@ -103,12 +103,10 @@ class AuthController extends Controller
   // *************************************************************************************************************
 
   public function logout(Request $request) {    
-    if ($request->user()) { 
-      $request->user()->tokens()->delete();
-    }
+    $request->user()->tokens()->delete();
 
     return( 'Você foi deslogado com sucesso!' );  
-  }
+}
 
 
   // *************************************************************************************************************

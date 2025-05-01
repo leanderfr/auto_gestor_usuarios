@@ -41,8 +41,8 @@ function Header( props ) {
         {/* botoes novo usuario, login, logout */}
         <div style={{ display: 'flex', flexDirection: 'row', gap: '30px', paddingRight: '20px' }}>
 
-            {/* se nao estiver mostrando form de registro, oferece botao 'REGISTRAR-ME' */}
-            { ! props.formRegistroAtivo && ! props.formRegistroAtivo &&
+            {/* se nao ha usuario logado e nao esta mostrando form de registro, oferece botao 'REGISTRAR-ME' */}
+            { infoUsuarioLogado.nome==='' && ! props.formRegistroAtivo  &&
               <button ref={btnRegistrar} style = {btnPadrao}  
                   onMouseEnter={ () => {btnRegistrar.current.style.border ='solid 2px gray'} } 
                   onMouseLeave={ () => {btnRegistrar.current.style.border ='solid 2px transparent'} }   
@@ -51,7 +51,7 @@ function Header( props ) {
               </button> 
             }
 
-            {/* se nao estiver mostrando form de login e nao houver usuario logado, oferece botao 'LOGIN' */}
+            {/* se nao ha usuario logado e esta mostrando form de login, oferece botao 'LOGIN' */}
             { infoUsuarioLogado.nome==='' && ! props.formLoginAtivo && 
                 <button ref={btnLogin} style = {btnPadrao} 
                     onMouseEnter={ () => {btnLogin.current.style.border ='solid 2px gray'} } 
@@ -61,7 +61,7 @@ function Header( props ) {
                 </button> 
 	          }
 
-            {/* se houver usuario logado, oferece botao 'LOGOUT' */}
+            {/* se ha usuario logado, oferece botao 'LOGOUT' */}
             { infoUsuarioLogado.nome!=='' &&  
                 <button ref={btnLogout} style = {btnPadrao} 
                     onMouseEnter={ () => {btnLogout.current.style.border ='solid 2px gray'} } 

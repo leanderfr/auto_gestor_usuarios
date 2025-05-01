@@ -19,8 +19,12 @@ import { preparaAnimacaoCarregando, mensagemRolante  } from '../js/utils.js';
 
 export const ContextoCompartilhado = createContext();
 
-export const backendUrl = 'http://127.0.0.1:8000'
+//export const backendUrl = 'http://127.0.0.1:8000'
 //export const backendUrl = 'http://ec2-52-67-209-44.sa-east-1.compute.amazonaws.com:8001'
+
+export const backendUrl = 'http://127.0.0.1:8001'
+
+
 
 function Main() {
 
@@ -423,7 +427,9 @@ const prepararFormLogin = () => {
                 <MenuLateral  
                     infoUsuarioLogado={infoUsuarioLogado}  
                     setItemMenuAtual ={setItemMenuAtual}
-                />
+                    setMostrarFormLogin={setMostrarFormLogin}
+                    setMostrarFormRegistro={setMostrarFormRegistro}   /> 
+
           </div>
 
           {/* header e datatable */}
@@ -431,20 +437,21 @@ const prepararFormLogin = () => {
 
               <div className='Header'>
                 {/* se nao ha usuario logado, carrega Header com os botoes Registrar e Login  */}
-                { ! carregando && 
+                { 
                   <Header 
                       infoUsuarioLogado={infoUsuarioLogado} 
                       formRegistroAtivo={mostrarFormRegistro}   
                       formLoginAtivo={mostrarFormLogin}                    
-                      logout={logout}   
-                      exibirFormRegistro={exibirFormRegistro}   
-                      exibirFormLogin={exibirFormLogin}                     /> 
-                }
+                      exibirFormRegistro={exibirFormRegistro}
+                      exibirFormLogin={exibirFormLogin}
+                      logout={logout}   />              }
               </div>
 
               { ! mostrarFormLogin && ! mostrarFormRegistro && itemMenuAtual!='' &&
                   <div className='Datatable'>
-                    <Datatable  setCarregando={setCarregando} getInfoUsuarioLogado={getInfoUsuarioLogado} /> 
+                    <Datatable  
+                      setCarregando={setCarregando} 
+                      getInfoUsuarioLogado={getInfoUsuarioLogado} />
                   </div>
               }
 
