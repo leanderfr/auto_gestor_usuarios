@@ -17,14 +17,14 @@ class AuthController extends Controller
   // Middleware('auth:sanctum') define que para executar qq funcao abaixo , é necessario estar logado
   // funcoes definidas em except, nao precisa
   // *************************************************************************************************************
-/*
+
   public static function middleware() 
   {
     return [
       new Middleware('auth:sanctum')->except(['lista', 'login', 'forms', 'registrar'])
     ];
   }
-*/
+
   // *************************************************************************************************************
   // *************************************************************************************************************
 
@@ -103,7 +103,9 @@ class AuthController extends Controller
   // *************************************************************************************************************
 
   public function logout(Request $request) {    
-    $request->user()->tokens()->delete();
+    if ($request->user()) { 
+      $request->user()->tokens()->delete();
+    }
 
     return( 'Você foi deslogado com sucesso!' );  
   }
@@ -117,8 +119,8 @@ class AuthController extends Controller
   public function forms(Request $request)  {    
 
       // concatena HTML dos forms login e registro (novo usuario)
-      $htmlFormLogin = view('auth.form_login')->render();
-      $htmlFormRegistro = view('auth.form_novo_usuario')->render();
+      $htmlFormLogin = view('auth.login')->render();
+      $htmlFormRegistro = view('auth.novo_usuario')->render();
 
       // quem separa as informacoes é a string '|||'
       return response("$htmlFormLogin|||$htmlFormRegistro", 200)

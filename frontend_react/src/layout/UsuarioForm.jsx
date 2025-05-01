@@ -18,6 +18,10 @@ function UsuarioForm( props )    {
     // obtem detalhes sobre qual registro editar
     const {operacao, registroId} = props;
 
+    // controla se  a flag Administrator esta ligada, caso esteja , desabilita flags Produtos, Categorias, Marcas
+    let [flagAdmin, setFlagAdmin, getFlagAdmin] = useState(false)
+
+
     //********************************************************************************************
     //********************************************************************************************
     const ajuda = () => {
@@ -71,6 +75,28 @@ function UsuarioForm( props )    {
         .catch((error) => console.log('erro='+error))
     }
 
+    //********************************************************************************************
+    //********************************************************************************************
+
+    const flagAdminMudou = (e) => {
+      // qddo chega aqui, e.target.checked ja esta com vlr novo
+      setFlagAdmin( e.target.checked );                           
+
+      if ( e.target.checked ) {
+        $('#chkProdutos').prop("checked", false);
+        $('#chkMarcas').prop("checked", false);
+        $('#chkCategorias').prop("checked", false);
+        $('#chkProdutos').prop("disabled", true);
+        $('#chkMarcas').prop("disabled", true);
+        $('#chkCategorias').prop("disabled", true);
+      } else {
+        $('#chkProdutos').prop("disabled", false);
+        $('#chkMarcas').prop("disabled", false);
+        $('#chkCategorias').prop("disabled", false);
+      }
+
+    }
+
 
     //********************************************************************************************
     //********************************************************************************************
@@ -101,7 +127,6 @@ function UsuarioForm( props )    {
 
     }
 
-
     //********************************************************************************************
     // carrega html do formulario
     //********************************************************************************************
@@ -109,10 +134,11 @@ function UsuarioForm( props )    {
         // monta formulario
         fetch(`${backendUrl}/usuarios/${registroId}`, { method: "GET" })
         .then((response) => response.json())
-        .then((data) => {
+        .then((usuario) => {
             setTimeout(() => {
-              setUsuario(data)  
-
+              setUsuario(usuario)  
+              setFlagAdmin(usuario.administrador)  
+              
               setTimeout(() => {
                 $('#txtNome').focus()
               }, 10);
@@ -120,6 +146,7 @@ function UsuarioForm( props )    {
             }, 500);
 
           props.setCarregando(false)
+          
         })
         .catch((error) => console.log('erro='+error));
     }
@@ -172,11 +199,11 @@ function UsuarioForm( props )    {
       <div className='panoFundoCinza'  onClick={fecharFormCrud}>     
 
       {/* container do form edicao */}
-      <div  class="flex flex-col w-[70%] max-w-[1200px] overflow-hidden pt-8 font-Roboto"  id='recordForm'>
+      <div  className="flex flex-col w-[70%] max-w-[1200px] overflow-hidden pt-8 font-Roboto"  id='recordForm'>
 
 
           {/* form edicao  */}
-          <div  class="flex flex-col w-full bg-white relative rounded-lg"  >
+          <div  className="flex flex-col w-full bg-white relative rounded-lg"  >
 
               {/* titulo e botao fechar */}
               <div id='divWINDOW_TOP'>
@@ -187,12 +214,12 @@ function UsuarioForm( props )    {
                   { operacao==='delete' && 'Excluir Usuário' }
                 </div>
 
-                <div class='flex flex-row '>
-                    <div class='divWINDOW_BUTTON mr-2'  aria-hidden="true" onClick={ () => {ajuda()}} >
+                <div className='flex flex-row'>
+                    <div className='divWINDOW_BUTTON mr-2'  aria-hidden="true" onClick={ () => {ajuda()}} >
                       &nbsp;&nbsp;[ ? ]&nbsp;&nbsp;
                     </div>
 
-                    <div class='divWINDOW_BUTTON mr-6'  onClick={props.fecharFormCrud} aria-hidden="true" >
+                    <div className='divWINDOW_BUTTON mr-6'  onClick={props.fecharFormCrud} aria-hidden="true" >
                       &nbsp;&nbsp;[ X ]&nbsp;&nbsp;
                     </div>
                 </div>
@@ -200,16 +227,16 @@ function UsuarioForm( props )    {
               </div>
 
               {/* campos  do formulario */}
-              <div class="flex flex-col w-full h-auto pr-12 pl-6 pt-8 pb-8" >
+              <div className="flex flex-col w-full h-auto pr-12 pl-6 pt-8 pb-8" >
 
-                <div class="flex flex-row w-full gap-5">
+                <div className="flex flex-row w-full gap-5">
 
-                  <div class="flex flex-col w-full">
-                    <div class="flex flex-row w-full "> 
+                  <div className="flex flex-col w-full">
+                    <div className="flex flex-row w-full "> 
                         <div style={{paddingTop:'3px'}} >Nome:</div>  
-                        <div class='flex grow'>
+                        <div className='flex grow'>
                           { operacao=='delete' &&
-                            <span class='span_formFieldValue' id='txtNome'>{ usuario.name }</span> }
+                            <span className='span_formFieldValue' id='txtNome'>{ usuario.name }</span> }
                           { operacao!='delete' && 
                             <input 
                                 type="text" 
@@ -219,7 +246,7 @@ function UsuarioForm( props )    {
                                 id="txtNome"                                 
                                 defaultValue={ usuario.name }  
                                 onFocus={(e)=>{e.target.select()}}
-                                class='text_formFieldValue'  />
+                                className='text_formFieldValue'  />
                           }                                
                         </div>
                     </div>
@@ -227,47 +254,61 @@ function UsuarioForm( props )    {
 
                 </div>
 
-                <div class="flex flex-row w-full gap-5 mt-3">
-                  <div class="flex flex-row w-full "> 
+                <div className="flex flex-row w-full gap-5 mt-3">
+                  <div className="flex flex-row w-full "> 
                     <div style={{paddingTop:'3px'}} >Email:</div>  
-                    <div class='flex grow'> 
-                        <span class='span_formFieldValue' >{ usuario.email }</span>
+                    <div className='flex grow'> 
+                        <span className='span_formFieldValue' >{ usuario.email }</span>
                     </div>
                   </div>
                 </div>
 
                 <div style = {{  display: 'flex', flexDirection: 'column', gap: '20px' , marginTop: '40px',  width: '100%' }}>
-
-                    <div style = {{  display: 'flex', flexDirection: 'row', gap: '30px', width: '100%' }}>
-                        <span style={{  paddingTop: '7px', width: '200px' }}>Gestão de Produtos</span>
-                        <label for="chkProdutos" class="switch_language"  >
-                          <input id="chkProdutos" type="checkbox" defaultChecked= { usuario.gestao_produtos==1 ? true : false } />
-                          <span class="slider_language round"></span>
-                        </label>
-                    </div>
-
-                    <div style = {{  display: 'flex', flexDirection: 'row',  gap: '30px', width: '100%' }}>
-                        <span style={{  paddingTop: '7px', width: '200px' }}>Gestão de Marcas</span>
-                        <label for="chkMarcas" class="switch_language"  >
-                          <input id="chkMarcas" type="checkbox"  defaultChecked= { usuario.gestao_marcas==1 ? true : false } />
-                          <span class="slider_language round"></span>
-                        </label>
-                    </div>
-
-                    <div style = {{  display: 'flex', flexDirection: 'row',  gap: '30px', width: '100%' }}>
-                        <span style={{  paddingTop: '7px', width: '200px' }}>Gestão de Categorias</span>
-                        <label for="chkCategorias" class="switch_language"  >
-                          <input id="chkCategorias" type="checkbox" defaultChecked= { usuario.gestao_categorias==1 ? true : false }  />
-                          <span class="slider_language round"></span>
-                        </label>
-                    </div>
-
-                    <hr />
                     <div style = {{  display: 'flex', flexDirection: 'row',  gap: '30px', width: '100%' }}>
                         <span style={{  paddingTop: '7px', width: '200px' }}>Administrador</span>
-                        <label for="chkAdministrador" class="switch_language"  >
-                          <input id="chkAdministrador" type="checkbox" defaultChecked= { usuario.administrador==1 ? true : false }  />
-                          <span class="slider_language round"></span>
+                        <label htmlFor="chkAdministrador" className="switch_prettier"  >
+
+                          <input id="chkAdministrador" type="checkbox"  defaultChecked={usuario.administrador} 
+                            onChange={ (e) => flagAdminMudou(e) }  />
+
+                          <span className="slider_prettier round"></span>
+                        </label>
+                    </div>
+
+                    <hr /> 
+
+
+                    <div style = {{  display: 'flex', flexDirection: 'row', gap: '30px', width: '100%' }}
+                        className={ flagAdmin ? 'fadeText' : '' }>
+                        <span style={{  paddingTop: '7px', width: '200px' }}>Gestão de Produtos</span>
+                        <label htmlFor="chkProdutos" className="switch_prettier"  >
+                          <input id="chkProdutos" type="checkbox" 
+                                defaultChecked= { usuario.gestao_produtos && ! flagAdmin }  
+                                disabled= { flagAdmin } />
+                          <span className="slider_prettier round"></span>
+                        </label>
+                    </div>
+
+                    <div style = {{  display: 'flex', flexDirection: 'row',  gap: '30px', width: '100%' }} 
+                          className={ flagAdmin ? 'fadeText' : '' }>
+
+                        <span style={{  paddingTop: '7px', width: '200px' }}>Gestão de Marcas</span>
+                        <label htmlFor="chkMarcas" className="switch_prettier"  >
+                          <input id="chkMarcas" type="checkbox"  
+                              defaultChecked= { usuario.gestao_marcas && ! flagAdmin }  
+                              disabled= { flagAdmin } />
+                          <span className="slider_prettier round"></span>
+                        </label>
+                    </div>
+
+                    <div style = {{  display: 'flex', flexDirection: 'row',  gap: '30px', width: '100%' }}
+                          className={ flagAdmin ? 'fadeText' : '' }>
+                        <span style={{  paddingTop: '7px', width: '200px' }}>Gestão de Categorias</span>
+                        <label htmlFor="chkCategorias" className="switch_prettier"  >
+                          <input id="chkCategorias" type="checkbox" 
+                            defaultChecked= { usuario.gestao_categorias && ! flagAdmin } 
+                            disabled= { flagAdmin } />
+                          <span className="slider_prettier round"></span>
                         </label>
                     </div>
 
@@ -279,14 +320,14 @@ function UsuarioForm( props )    {
               </div>
 
               {/* botoes salvar/sair */}
-              <div class="flex flex-row w-full justify-between px-6 border-t-[1px] border-t-gray-300 py-2">
-                <button  id="btnCLOSE" class="btnCANCEL" onClick={props.fecharFormCrud} >Cancelar</button>
+              <div className="flex flex-row w-full justify-between px-6 border-t-[1px] border-t-gray-300 py-2">
+                <button  id="btnCLOSE" className="btnCANCEL" onClick={props.fecharFormCrud} >Cancelar</button>
 
                 { operacao=='delete' && 
-                  <button  id="btnDELETE" class="btnDELETE" onClick={()=>{excluirUsuario()}} aria-hidden="true">Excluir</button> }
+                  <button  id="btnDELETE" className="btnDELETE" onClick={()=>{excluirUsuario()}} aria-hidden="true">Excluir</button> }
 
                 { operacao!=='delete' && 
-                  <button  id="btnSAVE" class="btnSAVE" onClick={()=>{salvarUsuario()}} aria-hidden="true">Salvar</button> }
+                  <button  id="btnSAVE" className="btnSAVE" onClick={()=>{salvarUsuario()}} aria-hidden="true">Salvar</button> }
 
               </div>
 

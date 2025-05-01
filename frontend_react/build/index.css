@@ -597,7 +597,7 @@ body {
 input type='checkbox' em formato de switcher , seletor de idioma 
 *********************************************************************************************************************************/
 
-.switch_language {
+.switch_prettier {
   position: relative;
   display: inline-block;
   width: 60px;
@@ -606,13 +606,13 @@ input type='checkbox' em formato de switcher , seletor de idioma
   margin-top: 1px;
 }
 
-.switch_language input {
+.switch_prettier input {
   opacity: 0;
   width: 0;
   height: 0;
 }
 
-.slider_language {
+.slider_prettier {
   position: absolute;
   cursor: pointer;
   top: 0;
@@ -624,7 +624,7 @@ input type='checkbox' em formato de switcher , seletor de idioma
   border: solid 1px transparent;
 }
 
-.slider_language:before {
+.slider_prettier:before {
   position: absolute;
   content: "";
   height: 22px;
@@ -636,24 +636,24 @@ input type='checkbox' em formato de switcher , seletor de idioma
   transition: 0.1s;
 }
 
-input:checked + .slider_language {
+input:checked + .slider_prettier {
   background-color: lightgray;
 }
 
-input:focus + .slider_language {
+input:focus + .slider_prettier {
   box-shadow: 0 0 1px yellow;
 }
 
-input:checked + .slider_language:before {
+input:checked + .slider_prettier:before {
   transform: translateX(24px);
 }
 
-.slider_language.round {
+.slider_prettier.round {
   border-radius: 30px;
   height: 30px;
 }
 
-.slider_language.round:before {
+.slider_prettier.round:before {
   border-radius: 50%;
 }
 

@@ -19,8 +19,8 @@ import { preparaAnimacaoCarregando, mensagemRolante  } from '../js/utils.js';
 
 export const ContextoCompartilhado = createContext();
 
-//export const backendUrl = 'http://ec2-54-94-203-105.sa-east-1.compute.amazonaws.com:8071'
-export const backendUrl = 'http://ec2-52-67-209-44.sa-east-1.compute.amazonaws.com:8001'
+export const backendUrl = 'http://127.0.0.1:8000'
+//export const backendUrl = 'http://ec2-52-67-209-44.sa-east-1.compute.amazonaws.com:8001'
 
 function Main() {
 
@@ -216,7 +216,7 @@ const prepararFormLogin = () => {
               password: $('#password').val(),
               password_confirmation: $('#password_confirmation').val(),
               ativo: 1,
-              administrador: 0,
+              administrador:  $("#chkAdministrador").is(':checked'),
               gestao_produtos: 1,
               gestao_marcas: 1,
               gestao_categorias: 1,
