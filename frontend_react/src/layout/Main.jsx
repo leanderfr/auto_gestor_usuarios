@@ -20,9 +20,9 @@ import { preparaAnimacaoCarregando, mensagemRolante  } from '../js/utils.js';
 export const ContextoCompartilhado = createContext();
 
 //export const backendUrl = 'http://127.0.0.1:8000'
-//export const backendUrl = 'http://ec2-52-67-209-44.sa-east-1.compute.amazonaws.com:8001'
+export const backendUrl = 'http://ec2-52-67-209-44.sa-east-1.compute.amazonaws.com:8001'
 
-export const backendUrl = 'http://127.0.0.1:8001'
+//export const backendUrl = 'http://127.0.0.1:8001'
 
 
 
