@@ -2,19 +2,37 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\DB;
 
-class UsuariosController extends Controller
+
+class UsuariosController extends Controller implements HasMiddleware
+
 {
- 
+
+  // *************************************************************************************************************
+  // Middleware('auth:sanctum') define que para executar qq funcao abaixo , é necessario estar logado
+  // funcoes definidas em except, nao precisa
+  // *************************************************************************************************************
+
+  public static function middleware() 
+  {
+    // funcoes que nao ha necessidade de ser usuario logado para executar
+    return [
+      new Middleware('auth:sanctum')->except(['lista', 'exibir'])
+    ];
+  }
+
+
+
   // *************************************************************************************************************
   // *************************************************************************************************************
   public function lista() {
-
       return  User::all();
-
   }
 
   // *************************************************************************************************************
@@ -25,7 +43,11 @@ class UsuariosController extends Controller
 
   // *************************************************************************************************************
   // *************************************************************************************************************
-  public function editar(Request $request) {
+  public function editar(User $usuario, Request $request) {
+
+      // exige que seja administrator para alterar status
+      if (! $request->user()->administrador) return response()->json(['result' => 'Não autorizado.'],403);
+
       $erros = [   
           'name' => 'Nome precisa ter entre 3 e 150 caracteres',
       ];
@@ -38,9 +60,9 @@ class UsuariosController extends Controller
       ];
 
       $regOK = $request->validate($camposGravar, $erros);
-      $gravouOk = User::where('id', $request->route('id'))->update($regOK);
+      User::where('id', $request->route('id'))->update($regOK);
 
-      return $gravouOk;
+      return 'Usuário alterado com sucesso.';
   }
 
 
@@ -48,22 +70,24 @@ class UsuariosController extends Controller
   // *************************************************************************************************************
   public function excluir(Request $request) {
 
-      $excluitOk = User::where('id', $request->route('id'))->delete();
+      // exige que seja administrator para excluir usuario
+      if (! $request->user()->administrador) return response()->json(['result' => 'Não autorizado.'],403);
+  
+      User::where('id', $request->route('id'))->delete();
 
-      return $excluitOk;
+      return 'Usuário excluído com sucesso.';
   }
 
   // *************************************************************************************************************
   // *************************************************************************************************************
   public function status(Request $request) {
 
-      //$status = User::where('id', $request->route('id'))->delete();
+      // exige que seja administrator para alterar status
+      if (! $request->user()->administrador) return response()->json(['result' => 'Não autorizado.'],403);
+  
+      DB::statement('UPDATE users SET ativo = ! ifnull(ativo, 0) WHERE id = '.$request->route('id'));
 
-//      $statusMudou = User::where('id', $request->route('id'))->update( ['ativo' => DB::raw('! ativo')] );
-
-      $statusMudou = DB::statement('UPDATE users SET ativo = ! ifnull(ativo, 0) WHERE id = '.$request->route('id'));
-
-      return $statusMudou;
+      return 'Status alterado com sucesso.';
   }
 
 

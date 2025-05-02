@@ -20,9 +20,9 @@ import { preparaAnimacaoCarregando, mensagemRolante  } from '../js/utils.js';
 export const ContextoCompartilhado = createContext();
 
 //export const backendUrl = 'http://127.0.0.1:8000'
-export const backendUrl = 'http://ec2-52-67-209-44.sa-east-1.compute.amazonaws.com:8001'
+//export const backendUrl = 'http://ec2-52-67-209-44.sa-east-1.compute.amazonaws.com:8001'
 
-//export const backendUrl = 'http://127.0.0.1:8001'
+export const backendUrl = 'http://127.0.0.1:8000'
 
 
 
@@ -348,6 +348,7 @@ const prepararFormLogin = () => {
       // maneira tosca de testar a resposta, mas preciso entregar a app, se eu tivesse tempo testaria diferente
       mensagemRolante(res, 3000) 
 
+      // se deslogou perante o backend, remove info no localstorage do navegador
       if  (res.indexOf('deslogado com sucesso')!=-1) {
         localStorage.removeItem("infoUsuarioLogado")
 

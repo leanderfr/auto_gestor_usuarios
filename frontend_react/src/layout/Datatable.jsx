@@ -123,25 +123,32 @@ function Datatable( props ) {
         mensagemRolante("Você não pode alterar status do usuário atualmente logado", 3000)          
         return;
       }
-
       props.setCarregando(true)
 
       fetch(`${backendUrl}/usuarios/status/${registroId}`, { 
         method: 'PATCH',
         headers: {
           'Accept': 'application/json',
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer '+ props.getInfoUsuarioLogado.current.token,
         },
       })
-      .then((response) => response.json())
+      .then((response) => {
+          props.setCarregando(false)
+
+          if (!response.ok) {
+            throw new Error(`Erro ao mudar status do usuário, código erro= ${response.status}`);
+          }
+          return response.text(); 
+      })
       .then((resposta) => {
-        props.setCarregando(false)
+        mensagemRolante(resposta, 2000);
         setTimeout(() => {
           setRegistros(null)  // força reload da datatable   
         }, 500);
         
       })
-      .catch((error) => console.log('erro='+error))
+      .catch((error) => mensagemRolante(error, 2000));
   }
 
 

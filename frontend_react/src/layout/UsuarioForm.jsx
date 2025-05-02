@@ -43,7 +43,8 @@ function UsuarioForm( props )    {
           method: 'POST',
           headers: {
             'Accept': 'application/json',
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer '+ props.getInfoUsuarioLogado.current.token,  
           },
           body: JSON.stringify( {
             name: $('#txtNome').val(),
@@ -53,26 +54,22 @@ function UsuarioForm( props )    {
             gestao_categorias: $("#chkCategorias").is(':checked'),
           } )  
         })
-        .then((response) => response.json())
-        .then((resposta) => {
+        .then((response) => {
           props.setCarregando(false)
 
-          // deve haver um jeito mais inteligente de exibir o erro abaixo, mas sao 01:08 da manha, vai usando IF mesmo 
-          let erro = ''
-          if (typeof resposta.errors!='undefined') {
-              if (typeof resposta.errors.name!='undefined') erro = resposta.errors.name;
+          if (!response.ok) {
+            throw new Error(`Erro ao excluir usuário, código erro= ${response.status}`);
           }
-
-          if (erro!=='')  {
-            mensagemRolante(erro, 3000)          
-          }  
-          else {
-            props.fecharFormCrud()
-            props.setRegistros(null)  // força reload da datatable
-          }
+          return response.text(); 
+        })  
+        .then((resposta) => {
+          mensagemRolante(resposta, 2000);
+          
+          props.fecharFormCrud()
+          props.setRegistros(null)  // força reload da datatable
  
         })
-        .catch((error) => console.log('erro='+error))
+        .catch((error) => mensagemRolante(error, 2000));
     }
 
     //********************************************************************************************
@@ -103,27 +100,37 @@ function UsuarioForm( props )    {
     const excluirUsuario = async () => {
 
         if (props.getInfoUsuarioLogado.current.id == registroId)  {
-          mensagemRolante("Você não pode excluir o usuário atualmente logado", 3000)          
+         mensagemRolante("Você não pode excluir o usuário atualmente logado", 3000)          
           return;
         }
-
         props.setCarregando(true)
 
         fetch(`${backendUrl}/usuarios/${registroId}`, { 
           method: 'DELETE',
           headers: {
             'Accept': 'application/json',
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer '+ props.getInfoUsuarioLogado.current.token,
           },
         })
-        .then((response) => response.text())
-        .then((resposta) => {
-          props.setCarregando(false)
+        .then((response) => {
+            props.setCarregando(false)
+
+            if (!response.ok) {
+              throw new Error(`Erro ao excluir usuário, código erro= ${response.status}`);
+            }
+            return response.text(); 
+        })
+
+        .then((resposta) => {          
+          mensagemRolante(resposta, 2000);
 
           props.fecharFormCrud()
           props.setRegistros(null)  // força reload da datatable
+
         })
-        .catch((error) => console.log('erro='+error))
+        .catch((error) => mensagemRolante(error, 2000));
+
 
     }
 

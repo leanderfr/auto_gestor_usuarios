@@ -9,19 +9,19 @@ use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Gate;
 
-//class AuthController extends Controller implements HasMiddleware
-class AuthController extends Controller 
+class AuthController extends Controller implements HasMiddleware
 {
 
   // *************************************************************************************************************
-  // Middleware('auth:sanctum') define que para executar qq funcao abaixo , é necessario estar logado
-  // funcoes definidas em except, nao precisa
+  // o middleware 'auth:sanctum' define que para executar qq funcao abaixo (exceto as definidas em EXCEPT), 
+  // é necessario estar logado
   // *************************************************************************************************************
 
   public static function middleware() 
   {
+    // funcoes que nao ha necessidade de ser usuario logado para executar
     return [
-      new Middleware('auth:sanctum')->except(['lista', 'login', 'forms', 'registrar'])
+      new Middleware('auth:sanctum')->except(['registrar', 'login', 'forms'])
     ];
   }
 
@@ -114,7 +114,7 @@ class AuthController extends Controller
   // fazendo isso para provar que conheco Blade, o certo seria ter estes forms no front
   // *************************************************************************************************************
 
-  public function forms(Request $request)  {    
+  public function forms()  {    
 
       // concatena HTML dos forms login e registro (novo usuario)
       $htmlFormLogin = view('auth.login')->render();

@@ -17,8 +17,8 @@ Route::group(['prefix'=>'auth'], function() {
   // login   
   Route::post('login', [AuthController::class, 'login']);
 
-  // logout, so pode ser feito por pessoa logada
-  Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
+  // logout
+  Route::post('logout', [AuthController::class, 'logout']);
   
   // carrega forms em formato html, o certo seria manter forms no frontend, mas gerando forms via bacnend (blade) 
   // para demonstrar que conheco laravel
