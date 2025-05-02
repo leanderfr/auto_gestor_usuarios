@@ -55,7 +55,7 @@ Subindo só o front end a aplicação já funciona localmente, se você executou
 Se tudo funcionou até aqui, agora abasta abrir o navegador e acessar o link criado localmente:
 
 [http://127.0.0.1:3000/](http://127.0.0.1:3000/)
-<br><br>
+<br><br><br>
 Para testar a aplicação, crie usuário novo ou utilize para teste usuários já criados:
 
 Usuário administrador:    login:   admin@a.com         senha= 111
