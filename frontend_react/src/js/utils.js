@@ -3,6 +3,7 @@ import 'spin.js/spin.css';
 import {Spinner} from 'spin.js';
 import $ from 'jquery'
 
+let beepAlerta = new Audio("sons/error_beep.mp3")
 
 const preparaAnimacaoCarregando = () => {
     // react exibe/remove animacao ajax, necessario refazer propriedades da animacao sempre que for reexibida (useEffect)
@@ -58,6 +59,8 @@ const mensagemRolante = (html, time) => {
 
   divRolante.html('&nbsp;&nbsp;&nbsp;&nbsp;' + html);
   divRolante.show("slide", { direction: "left" }, 200);
+
+  beepAlerta.play()
 
   setTimeout(function () { divRolante.hide("slide", { direction: "right" }, 200); }, time);
 }
