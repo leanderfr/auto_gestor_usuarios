@@ -22,7 +22,7 @@ export const ContextoCompartilhado = createContext();
 //export const backendUrl = 'http://127.0.0.1:8000'
 
  // backend AWS atual, contendo laravel
-export const backendUrl = 'http://ec2-52-67-209-44.sa-east-1.compute.amazonaws.com:8001'
+export const backendUrl = 'http://ec2-54-233-183-5.sa-east-1.compute.amazonaws.com:8001/'
 
 //export const backendUrl = 'http://127.0.0.1:8000'
 
