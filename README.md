@@ -23,7 +23,7 @@ Para isso, execute os comandos na sequência:
 ### `npm install`
 ### `cd ..`
 
-Os 3 comandos abaixo em princípio não são necessários, isso porque:
+Os 3 comandos abaixo não são necessários, isso porque:
 
 Apesar de exigir os 2 lados funcionando (front a back), o backend ja esta disponível na AWS e o front end usa, referencia internamente o backend da AWS.  
 
