@@ -1,70 +1,53 @@
-# Getting Started with Create React App
+# Instalando AutoGestor - Teste Proposto Gerente de Permissões de Usuário 
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Essa aplicação foi feita em ReactJs e Laravel, front e back foram colocados no mesmo projeto mas rodam em containers diferentes, mesma URL mas cada um em sua porta. O link inicial é= [http://ec2-54-233-183-5.sa-east-1.compute.amazonaws.com:3001/](http://ec2-54-233-183-5.sa-east-1.compute.amazonaws.com:3001/)
 
 ## Available Scripts
 
-In the project directory, you can run:
+Para clonar o projeto localmente, estando no BASH, em uma pasta com permissão para gravação, execute:
 
-### `npm start`
+### `https://github.com/leanderfr/auto_gestor_usuarios.git`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Na sequência, entre na pasta que foi criada:
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### `cd auto_gestor_usuarios`
 
-### `npm test`
+Você verá 2 pastas, a do front e a do back end. É necessário instalar as dependências de cada uma. Para isso, execute os comandos na sequência:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### `cd frontend_react/`
+### `npm install`
+### `cd ..`
+### `cd backend_laravel/`
+### `npm install`
+### `cd ..`
 
-### `npm run build`
+Agora, necessário subir (executar) a aplicação - apesar de exigir os 2 lados funcionando (front a back), o backend ja esta disponível na AWS e o front end usa, referencia internamente este backend da AWS.  Não há necessidade de subí-lo, mas seu codigo fonte esta disponivel ao clonar o projeto.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Para referenciar o backend local, é necessário alterar uma variável dentro do front, mas em princípio, não há necessidade disso.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Resumindo, subindo só o front end a aplicação já funciona localmente, para isso, entre novamente na pasta 'auto_gestor_usuarios'
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### `cd auto_gestor_usuarios`
 
-### `npm run eject`
+Agora suba o front end executando: 
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### `./front.sh`
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Nesse momento o terminal ficará bloqueado na execução do backend, é melhor assim para que nenhum processo fique sendo executado sem estar sendo notado.
+Agora é necessário executar o front, abra nova janela do BASH e entre novamente na pasta 'auto_gestor_usuarios'
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### `cd auto_gestor_usuarios`
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+Se tudo funcionou ok, agora abasta acessar o link criado localmente:
 
-## Learn More
+[http://127.0.0.1:3000/](http://127.0.0.1:3000/)
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
-To learn React, check out the [React documentation](https://reactjs.org/).
 
-### Code Splitting
+Crie usuário novo ou utilize como teste:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+Usuário administrador:    login:   admin@a.com         senha= 111
 
-### Analyzing the Bundle Size
+Usuário não administrador:    login:   comum@a.com         senha= 111
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+OBSERVAÇÂO:  A aplicação pode parecer lenta, isso é devido ao fato de estar hospedada na categoria free-tier, da AWS, por ser gratuita, não é a melhor infraestrutura de servidores, pode apresentar lentidão, mas funciona.
