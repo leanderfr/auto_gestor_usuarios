@@ -16,7 +16,8 @@ Na sequência, entre na pasta que foi criada:
 
 ### `cd auto_gestor_usuarios`
 
-Você verá 2 pastas, a do front e a do back end. É necessário instalar as dependências de cada uma. Para isso, execute os comandos na sequência:
+Você verá 2 pastas, a do front e a do back end. Em princípio é necessário instalar as dependências só do front (explicação mais abaixo). 
+Para isso, execute os comandos na sequência:
 
 ### `cd frontend_react/`
 ### `npm install`
