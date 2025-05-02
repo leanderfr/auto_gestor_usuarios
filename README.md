@@ -33,7 +33,7 @@ Se você fizer questão de executar o back localmente, será necessário referen
 
 a linha:
 
-### export const backendUrl = '<!--This is a comment-->(http://ec2-54-233-183-5.sa-east-1.compute.amazonaws.com:8001)<!--This is, too-->'
+### export const backendUrl = '<!--This is a comment(http://ec2-54-233-183-5.sa-east-1.compute.amazonaws.com:8001)-->'
 
 
 
