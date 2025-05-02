@@ -47,6 +47,7 @@ Comandos OPCIONAIS para executar back localmente:
 ### `npm install`
 ### `cd ..`
 
+Quanto à base de dados, apesar dos scripts SQL estarem disponíveis no projeto, não é preciso fazer o migrate, a base já está na internet e com registros exemplo criados.
 
 Subindo só o front end a aplicação já funciona localmente, se você executou 'cd ..' por último, já deve estar na pasta do projeto. Basta executar o front end agora, digitando:
 
@@ -63,4 +64,4 @@ Usuário administrador:    login:   admin@a.com         senha= 111
 Usuário não administrador:    login:   comum@a.com         senha= 111
 <br><br>
 ### Observação:  
-A aplicação pode parecer lenta, isso é devido ao fato de estar hospedada na categoria free-tier, da AWS, por ser gratuita, não é a melhor infraestrutura de servidores, pode apresentar lentidão, mas funciona.
+A aplicação pode parecer lenta, isso é devido ao fato de estar hospedada na categoria free-tier, da AWS, por ser gratuita, não é a melhor infraestrutura de servidores, pode apresentar lentidão, mas funciona.  (A base de dados também está na AWS RDS)
