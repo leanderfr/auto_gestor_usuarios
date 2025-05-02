@@ -20,28 +20,36 @@ Você verá 2 pastas, a do front e a do back end. É necessário instalar as dep
 ### `cd frontend_react/`
 ### `npm install`
 ### `cd ..`
+
+Os 3 comandos abaixo em princípio não são necessários, isso porque:
+
+Apesar de exigir os 2 lados funcionando (front a back), o backend ja esta disponível na AWS e o front end usa, referencia internamente o backend da AWS.  
+Não há necessidade de executá-lo localmente, mas seu código fonte esta disponivel na pasta 'backend_laravel' ao clonar o projeto.
+
+Se você fizer questão de executar o back localmente, será necessário referenciá-lo no front, caso faça questão disso, altere no arquivo:
+
+./auto_gestor_usuarios/frontend_react/src/layout/Main.jsx   
+
+a linha:
+
+### export const backendUrl = 'http://ec2-54-233-183-5.sa-east-1.compute.amazonaws.com:8001'
+
+para:
+
+### export const backendUrl = 'http://127.0.0.1:8000'
+
+Comandos OPCIONAIS para executaar back localmente: 
+
 ### `cd backend_laravel/`
 ### `npm install`
 ### `cd ..`
 
-Agora, necessário subir (executar) a aplicação - apesar de exigir os 2 lados funcionando (front a back), o backend ja esta disponível na AWS e o front end usa, referencia internamente este backend da AWS.  Não há necessidade de subí-lo, mas seu codigo fonte esta disponivel ao clonar o projeto.
 
-Para referenciar o backend local, é necessário alterar uma variável dentro do front, mas em princípio, não há necessidade disso.
-
-Resumindo, subindo só o front end a aplicação já funciona localmente, para isso, entre novamente na pasta 'auto_gestor_usuarios'
-
-### `cd auto_gestor_usuarios`
-
-Agora suba o front end executando: 
+Subindo só o front end a aplicação já funciona localmente, se você executou 'cd ..' por último, já deve estar na pasta do projeto. Basta executar o front end agora, digitando:
 
 ### `./front.sh`
 
-Nesse momento o terminal ficará bloqueado na execução do backend, é melhor assim para que nenhum processo fique sendo executado sem estar sendo notado.
-Agora é necessário executar o front, abra nova janela do BASH e entre novamente na pasta 'auto_gestor_usuarios'
-
-### `cd auto_gestor_usuarios`
-
-Se tudo funcionou ok, agora abasta acessar o link criado localmente:
+Se tudo funcionou até aqui, agora abasta abrir o navegador e acessar o link criado localmente:
 
 [http://127.0.0.1:3000/](http://127.0.0.1:3000/)
 
