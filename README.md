@@ -25,7 +25,7 @@ Para isso, execute os comandos na sequência:
 
 Os 3 comandos abaixo não são necessários, isso porque:
 
-Apesar de exigir os 2 lados funcionando (front a back), o backend ja esta disponível na AWS e o front end usa, referencia internamente o backend da AWS.  
+Apesar de exigir os 2 lados funcionando (front a back), o backend ja esta containerizado na AWS e o front end usa, referencia internamente o backend da AWS.  
 
 Não há necessidade de executá-lo localmente, mas seu código fonte esta disponivel na pasta 'backend_laravel' ao clonar o projeto.
 
