@@ -56,13 +56,12 @@ Se tudo funcionou até aqui, agora abasta abrir o navegador e acessar o link cri
 
 [http://127.0.0.1:3000/](http://127.0.0.1:3000/)
 
-
-
-Favor, crie usuário novo ou utilize para teste usuários já criados:
+<br><br><br>
+Para testar a aplicação, crie usuário novo ou utilize para teste usuários já criados:
 
 Usuário administrador:    login:   admin@a.com         senha= 111
 
 Usuário não administrador:    login:   comum@a.com         senha= 111
-
+<br><br><br>
 ### OBSERVAÇÂO:  A aplicação pode parecer lenta, isso é devido ao fato de estar hospedada na categoria free-tier, da AWS, por ser gratuita, não é a melhor 
 ### infraestrutura de servidores, pode apresentar lentidão, mas funciona.
