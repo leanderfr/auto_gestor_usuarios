@@ -47,11 +47,12 @@ Comandos OPCIONAIS para executar back localmente:
 ### `npm install`
 ### `cd ..`
 
-Quanto à base de dados, apesar dos scripts SQL estarem disponíveis no projeto, não é preciso fazer o migrate, a base já está na internet e com registros exemplo criados.
-
 Subindo só o front end a aplicação já funciona localmente, se você executou 'cd ..' por último, já deve estar na pasta do projeto. Basta executar o front end agora, digitando:
 
 ### `./front.sh`
+
+Quanto à base de dados, apesar dos scripts SQL estarem disponíveis no projeto, não é preciso fazer o migrate, a base já está na internet e com registros exemplo criados.
+
 
 Se tudo funcionou até aqui, agora abasta abrir o navegador e acessar o link criado localmente:
 
