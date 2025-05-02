@@ -1,6 +1,6 @@
 # Instalando AutoGestor - Teste Proposto Gerente de Permissões de Usuário 
 
-Essa aplicação foi feita em ReactJs e Laravel, front e back foram colocados no mesmo projeto mas rodam em containers diferentes, mesma URL mas cada um em sua porta. O link inicial é= [http://ec2-54-233-183-5.sa-east-1.compute.amazonaws.com:3001/](http://ec2-54-233-183-5.sa-east-1.compute.amazonaws.com:3001/)
+Essa aplicação foi feita em ReactJs e Laravel, front e back foram colocados no mesmo projeto mas rodam em containers diferentes, mesma URL mas cada um em sua porta. O link inicial é=<br> [http://ec2-54-233-183-5.sa-east-1.compute.amazonaws.com:3001/]{:target="_blank"}(http://ec2-54-233-183-5.sa-east-1.compute.amazonaws.com:3001/)
 
 ## Available Scripts
 
