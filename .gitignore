@@ -43,3 +43,5 @@
 /frontend_react/*.tgz
 
 /frontend_react/.yarn-integrity
+
+./node_modules
