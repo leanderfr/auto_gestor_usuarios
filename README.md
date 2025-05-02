@@ -62,5 +62,5 @@ Usuário administrador:    login:   admin@a.com         senha= 111
 
 Usuário não administrador:    login:   comum@a.com         senha= 111
 <br><br>
-### OBSERVAÇÂO:  
+### Observação:  
 A aplicação pode parecer lenta, isso é devido ao fato de estar hospedada na categoria free-tier, da AWS, por ser gratuita, não é a melhor infraestrutura de servidores, pode apresentar lentidão, mas funciona.
