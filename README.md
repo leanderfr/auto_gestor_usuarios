@@ -25,6 +25,7 @@ Você verá 2 pastas, a do front e a do back end. É necessário instalar as dep
 Os 3 comandos abaixo em princípio não são necessários, isso porque:
 
 Apesar de exigir os 2 lados funcionando (front a back), o backend ja esta disponível na AWS e o front end usa, referencia internamente o backend da AWS.  
+
 Não há necessidade de executá-lo localmente, mas seu código fonte esta disponivel na pasta 'backend_laravel' ao clonar o projeto.
 
 Se você fizer questão de executar o back localmente, será necessário referenciá-lo no front, caso faça questão disso, altere no arquivo:
@@ -35,12 +36,11 @@ a linha:
 
 export const backendUrl = 'http://ec2-54-233-183-5.sa-east-1.compute.amazonaws.com:8001'
 
-
 para:
 
 export const backendUrl = 'http://127.0.0.1:8000'
 
-Comandos OPCIONAIS para executaar back localmente: 
+Comandos OPCIONAIS para executar back localmente: 
 
 ### `cd backend_laravel/`
 ### `npm install`
@@ -57,10 +57,11 @@ Se tudo funcionou até aqui, agora abasta abrir o navegador e acessar o link cri
 
 
 
-Crie usuário novo ou utilize como teste:
+Favor, crie usuário novo ou utilize para teste usuários já criados:
 
 Usuário administrador:    login:   admin@a.com         senha= 111
 
 Usuário não administrador:    login:   comum@a.com         senha= 111
 
-OBSERVAÇÂO:  A aplicação pode parecer lenta, isso é devido ao fato de estar hospedada na categoria free-tier, da AWS, por ser gratuita, não é a melhor infraestrutura de servidores, pode apresentar lentidão, mas funciona.
+### OBSERVAÇÂO:  A aplicação pode parecer lenta, isso é devido ao fato de estar hospedada na categoria free-tier, da AWS, por ser gratuita, não é a melhor 
+### infraestrutura de servidores, pode apresentar lentidão, mas funciona.
