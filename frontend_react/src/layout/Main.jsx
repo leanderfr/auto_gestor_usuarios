@@ -223,9 +223,9 @@ const prepararFormLogin = () => {
               password_confirmation: $('#password_confirmation').val(),
               ativo: 1,
               administrador:  $("#chkAdministrador").is(':checked'),
-              gestao_produtos: $("#chkAdministrador").is(':checked') ? 1 : 0,
-              gestao_marcas: $("#chkAdministrador").is(':checked') ? 1 : 0,
-              gestao_categorias: $("#chkAdministrador").is(':checked') ? 1 : 0,
+              gestao_produtos: $("#chkAdministrador").is(':checked') ? 0 : 1,
+              gestao_marcas: $("#chkAdministrador").is(':checked') ? 0 : 1,
+              gestao_categorias: $("#chkAdministrador").is(':checked') ? 0 : 1,
           })
               
           setCarregando(true)
