@@ -37,7 +37,7 @@ class AuthController extends Controller implements HasMiddleware
           'password.min' => 'A senha precisa ter entre 3 e 50 caracteres',
           'password.max' => 'A senha precisa ter entre 3 e 50 caracteres',
           'password.required' => 'Preencha a senha',
-          'password.confirmed' => 'A senha não confirma',
+          'password.confirmed' => 'A senha não confere',
           'name' => 'Nome precisa ter entre 3 e 150 caracteres',
       ];
       $camposGravar =  [
