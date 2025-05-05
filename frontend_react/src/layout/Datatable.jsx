@@ -154,8 +154,9 @@ function Datatable( props ) {
 
   return (
     <>
-    <div style = {{  height: '30px', fontSize: '25px', marginBottom: '30px' }}>
-      { titulo }
+    <div style = {{  height: '30px', fontSize: '25px', marginBottom: '30px', display:'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+      <div>{ titulo }</div>
+      <div style={{ paddingTop: '10px', fontSize: '14px' }}>Legenda: <span style={{ backgroundColor: 'red'}}>&nbsp;&nbsp;&nbsp;</span>= inativo</div>
     </div>
 
     {/* looping para exibir cada coluna baseado na tabela atual */}
@@ -172,7 +173,7 @@ function Datatable( props ) {
         registros.map(function (registro)  {     
               return(
                 /* linha do registro  */
-                <div className='DatatableRow' key={`tr${registro.id}`}  > 
+                <div className={registro.ativo ? 'DatatableRow' : 'DatatableRowInactiveRecord'} key={`tr${registro.id}`}  > 
                 {
                 /* exbe cada coluna do registro atual  */
                 columns.map(function (col, j, {length}) {

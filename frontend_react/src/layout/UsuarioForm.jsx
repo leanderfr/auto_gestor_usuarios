@@ -40,7 +40,7 @@ function UsuarioForm( props )    {
         props.setCarregando(true)
 
         fetch(`${backendUrl}/usuarios/${registroId}`, { 
-          method: 'POST',
+          method: 'PATCH',
           headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',

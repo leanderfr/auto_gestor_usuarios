@@ -87,7 +87,7 @@ class AuthController extends Controller implements HasMiddleware
         return( [
           'erro' => 'Erro ao autenticar'
         ]);
-      }
+      }https://youtu.be/uVpidL-7jA4
 
       // cria token que sera enviado pelo front a cada requisicao do usuario logado
       $token = $usuario->createToken($usuario->name);

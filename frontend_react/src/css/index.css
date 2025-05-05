@@ -392,7 +392,7 @@ background-color:  #FFC266
   width:100%;
   cursor: pointer;
   line-height: 40px;
-  }
+}
 .DatatableRow:hover {
 background-color:  #FFC266
 }
@@ -574,6 +574,19 @@ TAILWIND
     color: black;
     margin-left: 20px;
 }
+
+.DatatableRowInactiveRecord {
+  display: flex;
+  flex-direction: row;
+  width:100%;
+  cursor: pointer;
+  line-height: 40px;
+  color:red;
+}
+.DatatableRowInactiveRecord:hover {
+background-color:  #FFC266
+}
+
 
 .divWINDOW_BUTTON {
     font-size: 1.3em;

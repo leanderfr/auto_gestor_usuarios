@@ -37,7 +37,7 @@ Route::group(['prefix'=>'usuarios'], function() {
   Route::get('/{id}', [UsuariosController::class, 'exibir']);
 
   // edita usuario existente
-  Route::post('/{id}', [UsuariosController::class, 'editar']);
+  Route::patch('/{id}', [UsuariosController::class, 'editar']);
 
   // excliui usuario existente
   Route::delete('/{id}', [UsuariosController::class, 'excluir']);
